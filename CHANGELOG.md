@@ -1,3 +1,7 @@
+# 0.0.5 WIP
+
+- Adds config.ru to really make this run on heroku
+
 # 0.0.4
 
 - Adds Gemfile.lock to git to make the app run on heroku
