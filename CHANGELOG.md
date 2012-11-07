@@ -1,4 +1,4 @@
-# 0.0.3 WIP
+# 0.0.3
 
 - Fixes specs to make them order agnostic
 - Fixes the dependencies (pin auth-client, add graph-client)
