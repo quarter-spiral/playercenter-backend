@@ -59,6 +59,16 @@ describe Playercenter::Backend::API do
   end
 
   describe "friends" do
+    before do
+      developers = connection.graph.uuids_by_role(app_token, 'player')
+      developers.each do |developer|
+        friends = connection.graph.list_related_entities(developer, app_token, 'friends')
+        friends.each do |friend|
+          connection.graph.remove_relationship(developer, friend, app_token, 'friends')
+        end
+      end
+    end
+
     it "can list a users friends" do
       user_token1 = connection.auth.venue_token(app_token, 'facebook', 'venue-id' => '12345', 'name' => 'Sam')
       uuid1 = connection.auth.token_owner(user_token1)['uuid']
@@ -69,7 +79,12 @@ describe Playercenter::Backend::API do
       user_token3 = connection.auth.venue_token(app_token, 'facebook', 'venue-id' => '3497', 'name' => 'Jack')
       uuid3 = connection.auth.token_owner(user_token3)['uuid']
 
+      begin
       connection.graph.add_relationship(uuid1, uuid2, app_token, 'friends', direction: 'both')
+      rescue Exception => e
+        p e.error
+        raise e
+      end
       connection.graph.add_relationship(uuid2, uuid3, app_token, 'friends')
 
       response = client.get "/v1/#{uuid1}/friends", "Authorization" => "Bearer #{user_token1}"

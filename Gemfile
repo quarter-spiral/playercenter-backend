@@ -1,9 +1,8 @@
 source 'https://rubygems.org'
+source "https://user:We267RFF7BfwVt4LdqFA@privategems.herokuapp.com/"
 
 # Specify your gem's dependencies in playercenter-backend.gemspec
 gemspec
-
-gem 'auth-client', path: '../auth-client'
 
 group :development, :test do
   gem 'rack-client'

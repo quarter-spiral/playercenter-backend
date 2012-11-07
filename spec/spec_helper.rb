@@ -42,8 +42,10 @@ module Playercenter::Backend
   end
 end
 
-# Wipe the graph
-connection = Graph::Backend::Connection.create.neo4j
-(connection.find_node_auto_index('uuid:*') || []).each do |node|
-  connection.delete_node!(node)
+def wipe_graph!
+  connection = Graph::Backend::Connection.create.neo4j
+  (connection.find_node_auto_index('uuid:*') || []).each do |node|
+    connection.delete_node!(node)
+  end
 end
+wipe_graph!
