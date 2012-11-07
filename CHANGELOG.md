@@ -1,3 +1,7 @@
+# 0.0.6 WIP
+
+- Loads graph-client to make it work on heroku
+
 # 0.0.5
 
 - Adds config.ru to really make this run on heroku

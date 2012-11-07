@@ -11,3 +11,4 @@ require "playercenter-backend/connection"
 require "playercenter-backend/api"
 
 require "auth-client"
+require "graph-client"
