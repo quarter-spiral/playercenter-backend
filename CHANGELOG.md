@@ -1,4 +1,4 @@
-# 0.0.6 WIP
+# 0.0.6
 
 - Loads graph-client to make it work on heroku
 
