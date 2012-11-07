@@ -1,4 +1,4 @@
-# 0.0.5 WIP
+# 0.0.5
 
 - Adds config.ru to really make this run on heroku
 
