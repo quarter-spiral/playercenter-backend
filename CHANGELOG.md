@@ -1,4 +1,4 @@
-# 0.0.4 WIP
+# 0.0.4
 
 - Adds Gemfile.lock to git to make the app run on heroku
 
