@@ -79,12 +79,7 @@ describe Playercenter::Backend::API do
       user_token3 = connection.auth.venue_token(app_token, 'facebook', 'venue-id' => '3497', 'name' => 'Jack')
       uuid3 = connection.auth.token_owner(user_token3)['uuid']
 
-      begin
       connection.graph.add_relationship(uuid1, uuid2, app_token, 'friends', direction: 'both')
-      rescue Exception => e
-        p e.error
-        raise e
-      end
       connection.graph.add_relationship(uuid2, uuid3, app_token, 'friends')
 
       response = client.get "/v1/#{uuid1}/friends", "Authorization" => "Bearer #{user_token1}"
