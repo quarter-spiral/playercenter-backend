@@ -65,7 +65,12 @@ module Playercenter::Backend
         uuids = connection.graph.list_related_entities(uuid, token, 'friends')
 
         identities = connection.auth.venue_identities_of(token, *uuids)
+
+        # Make up for the different response format of the auth-backend
+        # depending on if you request venue identities for one or many
+        # UUIDs
         identities = {uuids.first => identities} if uuids.size == 1
+
         identities
       end
     end
