@@ -60,7 +60,28 @@ Empty.
 
 ##### Body
 
-JSON encoded array of player info (see *Retrieve information about a player*).
+JSON encoded object mapping a friend's UUID to an object of player info (see *Retrieve information about a player*) like this:
+
+```javascript
+{
+  "some-uuid":  {
+    "uuid": "some-uuid",
+    "venue": {
+      "facebook": {
+        "id": "1234",
+        "name": "The Peter"
+      },
+      "galaxy-spiral": {
+        "id": "87233",
+        "name": "Peter Smith"
+      }
+    }
+  },
+  "other-uuid": {
+    …
+  }
+}
+```
 
 ### Update a users friends
 
