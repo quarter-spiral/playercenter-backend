@@ -20,7 +20,7 @@ PATH
   remote: .
   specs:
     playercenter-backend (0.0.6)
-      auth-client (>= 0.0.11)
+      auth-client (>= 0.0.12)
       grape (= 0.2.0)
       graph-client (>= 0.0.6)
       json (= 1.7.4)
@@ -62,7 +62,7 @@ GEM
       sinatra-activerecord
       sinatra-flash
       uuid
-    auth-client (0.0.11)
+    auth-client (0.0.12)
       service-client (>= 0.0.8)
     bcrypt-ruby (3.0.1)
     builder (3.0.4)
