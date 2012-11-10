@@ -14,11 +14,11 @@ module Playercenter::Backend
 
     version 'v1', :using => :path, :vendor => 'quarter-spiral'
 
+    content_type :json, "application/json;charset=utf-8"
     format :json
     default_format :json
 
-    #rescue_from Playercenter::Backend::Error
-    #error_format :json
+    error_format :json
 
     helpers do
       def connection
@@ -53,7 +53,11 @@ module Playercenter::Backend
     get ":uuid" do
       uuid = params[:uuid]
       venue_identities = try_twice_and_avoid_token_expiration do
-        connection.auth.venue_identities_of(token, uuid)
+        begin
+          connection.auth.venue_identities_of(token, uuid)
+        rescue Service::Client::ServiceError => e
+          error!(e.error, 404)
+        end
       end
       {uuid: uuid, venues: venue_identities}
     end
