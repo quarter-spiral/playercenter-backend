@@ -1,4 +1,4 @@
-# 0.0.8 WIP
+# 0.0.8
 
 * Bumps graph-client to handle empty response bodies from the graph-backend without errors
 
