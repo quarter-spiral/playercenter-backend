@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency 'auth-client', '>= 0.0.12'
-  gem.add_dependency 'graph-client', '>= 0.0.6'
+  gem.add_dependency 'graph-client', '>= 0.0.7'
 
   gem.add_dependency 'grape', '0.2.0'
   gem.add_dependency 'json', '1.7.4'

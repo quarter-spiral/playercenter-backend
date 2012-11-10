@@ -1,3 +1,7 @@
+# 0.0.8 WIP
+
+* Bumps graph-client to handle empty response bodies from the graph-backend without errors
+
 # 0.0.7
 
 * Changes the content type of the API to be UTF8 encoded
