@@ -1,3 +1,7 @@
+# 0.0.7 WIP
+
+* Makes it runnable on metaserver
+
 # 0.0.6
 
 - Loads graph-client to make it work on heroku
