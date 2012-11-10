@@ -1,4 +1,4 @@
-# 0.0.7 WIP
+# 0.0.7
 
 * Changes the content type of the API to be UTF8 encoded
 * Makes it runnable on metaserver
