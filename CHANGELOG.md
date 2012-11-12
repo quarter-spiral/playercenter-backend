@@ -1,4 +1,4 @@
-# 0.0.9 WIP
+# 0.0.9
 
 * Refactors galaxy-spiral to spiral-galaxy in the README
 * Bumps auth-backend and auth-client
