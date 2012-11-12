@@ -32,7 +32,7 @@ JSON encoded object like this:
       "id": "1234",
       "name": "The Peter"
     },
-    "galaxy-spiral": {
+    "spiral-galaxy": {
       "id": "87233",
       "name": "Peter Smith"
     }
@@ -71,7 +71,7 @@ JSON encoded object mapping a friend's UUID to an object of player info (see *Re
         "id": "1234",
         "name": "The Peter"
       },
-      "galaxy-spiral": {
+      "spiral-galaxy": {
         "id": "87233",
         "name": "Peter Smith"
       }

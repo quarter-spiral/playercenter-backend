@@ -10,7 +10,7 @@ group :development, :test do
   gem 'rake'
 
   gem 'graph-backend', "~> 0.0.10"
-  gem 'auth-backend', "~> 0.0.9"
+  gem 'auth-backend', "~> 0.0.11"
   gem 'nokogiri'
   gem 'sqlite3'
   gem 'sinatra_warden', git: 'https://github.com/quarter-spiral/sinatra_warden.git'

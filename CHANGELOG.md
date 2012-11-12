@@ -1,3 +1,8 @@
+# 0.0.9 WIP
+
+* Refactors galaxy-spiral to spiral-galaxy in the README
+* Bumps auth-backend and auth-client
+
 # 0.0.8
 
 * Bumps graph-client to handle empty response bodies from the graph-backend without errors

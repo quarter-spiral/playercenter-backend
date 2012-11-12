@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_dependency 'auth-client', '>= 0.0.12'
+  gem.add_dependency 'auth-client', '>= 0.0.13'
   gem.add_dependency 'graph-client', '>= 0.0.7'
 
   gem.add_dependency 'grape', '0.2.0'
