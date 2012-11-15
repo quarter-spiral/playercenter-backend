@@ -1,3 +1,7 @@
+# 0.0.10 WIP
+
+* Eases the grape dependency
+
 # 0.0.9
 
 * Refactors galaxy-spiral to spiral-galaxy in the README
