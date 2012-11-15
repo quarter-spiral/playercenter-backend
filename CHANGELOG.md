@@ -1,4 +1,4 @@
-# 0.0.10 WIP
+# 0.0.10
 
 * Eases the grape dependency
 

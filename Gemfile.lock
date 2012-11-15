@@ -19,9 +19,9 @@ GIT
 PATH
   remote: .
   specs:
-    playercenter-backend (0.0.9)
+    playercenter-backend (0.0.10)
       auth-client (>= 0.0.13)
-      grape (= 0.2.0)
+      grape (>= 0.2.0)
       graph-client (>= 0.0.7)
       json (= 1.7.4)
 
