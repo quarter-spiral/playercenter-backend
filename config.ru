@@ -8,4 +8,36 @@ if !ENV['RACK_ENV'] || ENV['RACK_ENV'] == 'development'
   ENV['QS_OAUTH_CLIENT_SECRET'] ||= 'm2ona42hvh7xthauditt63ri21qe1up'
 end
 
+class RackCors
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    response = options_request?(env) ? options_response : @app.call(env)
+
+    response_with_cors_headers(*response)
+  end
+
+  protected
+  def options_request?(env)
+    env['REQUEST_METHOD'] == 'OPTIONS'
+  end
+
+  def options_response
+    [204, {
+      'Access-Control-Allow-Headers' => 'origin, x-requested-with, content-type, accept, authorization',
+      'Access-Control-Allow-Methods' => 'GET, PUT, POST, DELETE, OPTIONS, PATCH, HEAD',
+      'Access-Control-Max-Age' => '1728000'
+    }, ['']]
+  end
+
+  def response_with_cors_headers(status, headers, body)
+    headers['Access-Control-Allow-Origin'] = '*'
+    [status, headers, body]
+  end
+end
+
+use RackCors
+
 run Playercenter::Backend::API

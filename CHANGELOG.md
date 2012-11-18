@@ -1,3 +1,7 @@
+# 0.0.11 WIP
+
+* Makes the API CORS compliant
+
 # 0.0.10
 
 * Eases the grape dependency
