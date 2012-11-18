@@ -1,41 +1,4 @@
-require_relative '../spec_helper'
-
-include Playercenter::Backend
-
-ENV['QS_AUTH_BACKEND_URL'] = 'http://auth-backend.dev'
-
-API_APP  = API.new
-AUTH_APP = Auth::Backend::App.new(test: true)
-
-module Auth
-  class Client
-    alias raw_initialize initialize
-    def initialize(url, options = {})
-      raw_initialize(url, options.merge(adapter: [:rack, AUTH_APP]))
-    end
-  end
-end
-
-def client
-  @client ||= Rack::Client.new {
-    run API_APP
-  }
-end
-
-def connection
-  @connection ||= Connection.create
-end
-
-require 'auth-backend/test_helpers'
-auth_helpers = Auth::Backend::TestHelpers.new(AUTH_APP)
-oauth_app = auth_helpers.create_app!
-ENV['QS_OAUTH_CLIENT_ID'] = oauth_app[:id]
-ENV['QS_OAUTH_CLIENT_SECRET'] = oauth_app[:secret]
-
-token = auth_helpers.get_token
-user = auth_helpers.user_data
-
-app_token = connection.auth.create_app_token(oauth_app[:id], oauth_app[:secret])
+require_relative '../request_spec_helper'
 
 describe Playercenter::Backend::API do
   describe "player info" do

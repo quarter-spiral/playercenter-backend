@@ -40,10 +40,14 @@ module Playercenter::Backend
         TokenStore.reset!
         yield
       end
+
+      def authentication_exception?
+        env['PATH_INFO'] =~ /\/avatars\/[^\/]+$/
+      end
     end
 
     before do
-      unless request.env['REQUEST_METHOD'] == 'OPTIONS'
+      unless authentication_exception?
         error!('Unauthenticated', 403) unless request.env['HTTP_AUTHORIZATION']
         @request_token = request.env['HTTP_AUTHORIZATION'].gsub(/^Bearer\s+/, '')
         error!('Unauthenticated', 403) unless connection.auth.token_valid?(@request_token)
@@ -84,7 +88,7 @@ module Playercenter::Backend
       error!("You can only add friends for yourself!", 403) unless token_uuid == params[:uuid]
 
       body = request.body
-      body =body.read if body.respond_to?(:read)
+      body = body.read if body.respond_to?(:read)
       friends_data = params[:friends]
 
       venue_id = params[:venue_id]
@@ -100,6 +104,15 @@ module Playercenter::Backend
       end
 
       ''
+    end
+
+    get ":uuid/avatars/:venue_id" do
+      venue_identities = try_twice_and_avoid_token_expiration do
+        connection.auth.venue_identities_of(token, params[:uuid])
+      end
+      identity = venue_identities[params[:venue_id]]
+
+      redirect "https://graph.facebook.com/#{identity['id']}/picture"
     end
   end
 end

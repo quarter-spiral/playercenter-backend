@@ -116,3 +116,24 @@ Returns status 200 on success.
 ##### Body
 
 Empty.
+
+### Retrieve a user's avatar on a given venue
+
+This request does not require any authentication.
+
+#### Request
+
+**GET** to ``/:UUID:/avatars/:VENUE:``
+
+##### Parameters
+
+- **UUID** [REQUIRED]: The UUID of the player who's avatar is going to be retrieved
+- **VENUE** [REQUIRED]: The venue of which the user's avatar is going to be retrieved from
+
+##### Body
+
+Empty.
+
+#### Response
+
+This might return the avatar image directly (HTTP status ``200``) or a ``302`` HTTP redirect to the actual avatar image.

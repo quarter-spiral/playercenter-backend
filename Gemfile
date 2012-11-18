@@ -9,7 +9,7 @@ group :development, :test do
   gem 'uuid'
   gem 'rake'
 
-  gem 'graph-backend', "~> 0.0.10"
+  gem 'graph-backend', "~> 0.0.11"
   gem 'auth-backend', "~> 0.0.11"
   gem 'nokogiri'
   gem 'sqlite3'

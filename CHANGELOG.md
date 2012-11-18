@@ -1,3 +1,7 @@
+# 0.0.12 WIP
+
+* Adds an endpoint to retrieve a player's avatar picture on a given venue
+
 # 0.0.11
 
 * Makes the API CORS compliant
