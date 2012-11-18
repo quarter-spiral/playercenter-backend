@@ -1,4 +1,4 @@
-# 0.0.12 WIP
+# 0.0.12
 
 * Adds an endpoint to retrieve a player's avatar picture on a given venue
 
