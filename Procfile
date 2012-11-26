@@ -1,1 +1,1 @@
-web: bundle exec rackup -p $PORT -O --threaded
+web: bundle exec thin -p $PORT --threaded start
