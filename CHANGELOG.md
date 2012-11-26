@@ -1,4 +1,4 @@
-# 0.0.13 WIP
+# 0.0.13
 
 * Adds an endpoint to make a user a player in the QS graph
 
