@@ -1,3 +1,7 @@
+# 0.0.13 WIP
+
+* Adds an endpoint to make a user a player in the QS graph
+
 # 0.0.12
 
 * Adds an endpoint to retrieve a player's avatar picture on a given venue

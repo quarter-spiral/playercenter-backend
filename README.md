@@ -137,3 +137,23 @@ Empty.
 #### Response
 
 This might return the avatar image directly (HTTP status ``200``) or a ``302`` HTTP redirect to the actual avatar image.
+
+### Register a user as a player of a game
+
+#### Request
+
+**POST** to ``/:PLAYER-UUID:/games/:GAME-UUID:/:VENUE:``
+
+##### Parameters
+
+- **PLAYER-UUID** [REQUIRED]: The UUID of the player who is playing the game
+- **GAME-UUID** [REQUIRED]: The UUID of a game the player is playing
+- **VENUE** [REQUIRED]: The venue on which the player is playing
+
+##### Body
+
+Empty.
+
+#### Response
+
+Returns status code 201 if the player was registered as a new player of the game, 304 if the player already plays the game on that venue. If the player already plays the game but not on that venue a 200 status code is returned instead. The body is empty.

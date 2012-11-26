@@ -66,6 +66,28 @@ module Playercenter::Backend
       {uuid: uuid, venues: venue_identities}
     end
 
+    get ":uuid/games" do
+      uuid = params[:uuid]
+      games = try_twice_and_avoid_token_expiration do
+        connection.graph.list_related_entities(uuid, token, 'plays')
+      end
+    end
+
+    post ":player_uuid/games/:game_uuid/:venue" do
+      player = params[:player_uuid]
+      game = params[:game_uuid]
+      venue = params[:venue]
+      venue = Utils.camelize_string(venue)
+
+      try_twice_and_avoid_token_expiration do
+        connection.graph.add_role(player, token, 'player')
+        response = connection.graph.add_relationship(player, game, token, 'plays', meta: {"venue#{venue}" => true})
+        status response.raw.status
+      end
+
+      ''
+    end
+
     get ":uuid/friends" do
       uuid = params[:uuid]
 
