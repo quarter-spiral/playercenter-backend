@@ -54,7 +54,9 @@ All information under the ``venue`` is present for each venue this player is pla
 
 ##### Body
 
-Empty.
+JSON encoded object with further options:
+
+* **game**: If present only displays friends who play the game with the given UUID
 
 #### Response
 

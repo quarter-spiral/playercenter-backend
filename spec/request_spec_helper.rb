@@ -17,9 +17,20 @@ module Auth
 end
 
 def client
-  @client ||= Rack::Client.new {
+  return @client if @client
+
+  @client = Rack::Client.new {
     run API_APP
   }
+
+  def @client.get(url, headers = {}, body = '', &block)
+    request('GET', url, headers, body, {}, &block)
+  end
+  def @client.delete(url, headers = {}, body = '', &block)
+    request('DELETE', url, headers, body, {}, &block)
+  end
+
+  @client
 end
 
 def connection

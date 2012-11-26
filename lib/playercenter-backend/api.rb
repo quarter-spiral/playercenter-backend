@@ -91,8 +91,15 @@ module Playercenter::Backend
     get ":uuid/friends" do
       uuid = params[:uuid]
 
+      game = params[:game]
+
       try_twice_and_avoid_token_expiration do
-        uuids = connection.graph.list_related_entities(uuid, token, 'friends')
+        uuids = nil
+        if game
+          uuids = connection.graph.query(token, [uuid, game], "MATCH node0-[:friends]->friend-[:plays]->game WHERE game = node1 RETURN DISTINCT friend.uuid").map &:first
+        else
+          uuids = connection.graph.list_related_entities(uuid, token, 'friends')
+        end
 
         identities = connection.auth.venue_identities_of(token, *uuids)
 

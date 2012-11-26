@@ -11,6 +11,8 @@ require 'minitest/autorun'
 
 require 'playercenter-backend'
 
+require 'uuid'
+
 
 GRAPH_BACKEND = Graph::Backend::API.new
 module Auth::Backend
