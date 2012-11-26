@@ -4,6 +4,8 @@ source "https://user:We267RFF7BfwVt4LdqFA@privategems.herokuapp.com/"
 # Specify your gem's dependencies in playercenter-backend.gemspec
 gemspec
 
+gem 'thin'
+
 group :development, :test do
   gem 'rack-client'
   gem 'uuid'

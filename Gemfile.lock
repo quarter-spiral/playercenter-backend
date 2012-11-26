@@ -193,4 +193,5 @@ DEPENDENCIES
   sinatra_warden!
   songkick-oauth2-provider!
   sqlite3
+  thin
   uuid
