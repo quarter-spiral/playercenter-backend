@@ -1,4 +1,4 @@
-# 0.0.14 WIP
+# 0.0.14
 
 * Adds an endpoint to list all games a player plays
 * Adds an endpoint to list friends games
