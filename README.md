@@ -13,7 +13,7 @@ A backend to gather and store data about players.
 ##### Parameters
 
 - **UUID** [REQUIRED]: The UUID of the player you want to retrieve information about.
-
+
 ##### Body
 
 Empty.
@@ -90,6 +90,28 @@ JSON encoded object mapping a friend's UUID to an object of player info (see *Re
 #### Request
 
 **GET** to ``/:UUID:/games``
+
+##### Parameters
+
+- **UUID** [REQUIRED]: The UUID of the player who's games are going to be retrieved
+
+##### Body
+
+JSON encoded Object with additional options:
+
+* **venue**: If set only games that the player play's on the given venue will be listed
+
+#### Response
+
+##### Body
+
+JSON encoded object of games in the way the ``devcenter-backend`` public API returns game lists.
+
+### List the games the friends of a player play
+
+#### Request
+
+**GET** to ``/:UUID:/games/friends``
 
 ##### Parameters
 
