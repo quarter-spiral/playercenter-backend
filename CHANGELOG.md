@@ -1,3 +1,7 @@
+# 0.0.15 WIP
+
+* Adds CORS headers and OPTION endpoints to the API
+
 # 0.0.14
 
 * Adds an endpoint to list all games a player plays

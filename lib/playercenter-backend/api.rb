@@ -47,12 +47,21 @@ module Playercenter::Backend
     end
 
     before do
+      header('Access-Control-Allow-Origin', '*')
+
       unless authentication_exception?
         error!('Unauthenticated', 403) unless request.env['HTTP_AUTHORIZATION']
         @request_token = request.env['HTTP_AUTHORIZATION'].gsub(/^Bearer\s+/, '')
         error!('Unauthenticated', 403) unless connection.auth.token_valid?(@request_token)
       end
     end
+
+    options '*path' do
+      header('Access-Control-Allow-Headers', 'origin, x-requested-with, content-type, accept, authorization')
+      header('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS, POST, DELETE')
+      header('Access-Control-Max-Age', '1728000')
+      ""
+    end    
 
     get ":uuid" do
       uuid = params[:uuid]
