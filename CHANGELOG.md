@@ -1,4 +1,4 @@
-# 0.0.15 WIP
+# 0.0.15
 
 * Adds CORS headers and OPTION endpoints to the API
 
