@@ -1,6 +1,7 @@
 # 0.0.14 WIP
 
-* Adds an endpoint to list friends that play a certain game
+* Adds an endpoint to list all games a player plays
+* Adds an endpoint to list friends games
 * Adds Thin
 
 # 0.0.13

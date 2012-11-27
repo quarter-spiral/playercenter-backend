@@ -85,6 +85,28 @@ JSON encoded object mapping a friend's UUID to an object of player info (see *Re
 }
 ```
 
+### List the games a player plays
+
+#### Request
+
+**GET** to ``/:UUID:/games``
+
+##### Parameters
+
+- **UUID** [REQUIRED]: The UUID of the player who's games are going to be retrieved
+
+##### Body
+
+JSON encoded Object with additional options:
+
+* **venue**: If set only games that the player play's on the given venue will be listed
+
+#### Response
+
+##### Body
+
+JSON encoded object of games in the way the ``devcenter-backend`` public API returns game lists.
+
 ### Update a users friends
 
 #### Request

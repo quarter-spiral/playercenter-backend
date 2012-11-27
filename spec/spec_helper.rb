@@ -2,10 +2,12 @@ ENV['RACK_ENV'] ||= 'test'
 
 Bundler.require
 
+require 'datastore-backend'
 require 'auth-backend'
 require 'rack/client'
 
 require 'graph-backend'
+require 'devcenter-backend'
 
 require 'minitest/autorun'
 
@@ -29,6 +31,23 @@ module Auth::Backend
   end
 end
 
+DATASTORE_BACKEND = Datastore::Backend::API.new
+module Devcenter::Backend
+  class Connection
+    alias raw_initialize initialize
+    def initialize(*args)
+      result = raw_initialize(*args)
+
+      graph_adapter = Service::Client::Adapter::Faraday.new(adapter: [:rack, GRAPH_BACKEND])
+      @graph.client.raw.adapter = graph_adapter
+
+      datastore_adapter = Service::Client::Adapter::Faraday.new(adapter: [:rack, DATASTORE_BACKEND])
+      @datastore.client.raw.adapter = datastore_adapter
+
+      result
+    end
+  end
+end
 
 module Playercenter::Backend
   class Connection
@@ -38,6 +57,9 @@ module Playercenter::Backend
 
       graph_adapter = Service::Client::Adapter::Faraday.new(adapter: [:rack, GRAPH_BACKEND])
       @graph.client.raw.adapter = graph_adapter
+
+      devcenter_adapter = Service::Client::Adapter::Faraday.new(adapter: [:rack, Devcenter::Backend::API.new])
+      @devcenter.client.raw.adapter = devcenter_adapter
 
       result
     end

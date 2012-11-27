@@ -68,9 +68,37 @@ module Playercenter::Backend
 
     get ":uuid/games" do
       uuid = params[:uuid]
+      venue = params[:venue]
+
       games = try_twice_and_avoid_token_expiration do
-        connection.graph.list_related_entities(uuid, token, 'plays')
+        uuids = nil
+        if venue
+          venue = "venue#{Utils.camelize_string(venue)}"
+          uuids = connection.graph.query(token, [uuid], "MATCH node0-[p:plays]->game WHERE p.#{venue}! = true RETURN DISTINCT game.uuid").map &:first
+        else
+          uuids = connection.graph.list_related_entities(uuid, token, 'plays')
+        end
+
+        connection.devcenter.list_games(uuids)
       end
+      {games: games}
+    end
+
+    get ":uuid/games/friends" do
+      uuid = params[:uuid]
+      venue = params[:venue]
+
+      games = try_twice_and_avoid_token_expiration do
+        uuids = nil
+        if venue
+          venue = "venue#{Utils.camelize_string(venue)}"
+          uuids = connection.graph.query(token, [uuid], "MATCH node0-[:friends]->()-[p:plays]->game WHERE p.#{venue}! = true RETURN DISTINCT game.uuid")
+        else
+          uuids = connection.graph.query(token, [uuid], 'MATCH node0-[:friends]->()-[:plays]->game RETURN DISTINCT game.uuid')
+        end
+        connection.devcenter.list_games(uuids.map &:first)
+      end
+      {games: games}
     end
 
     post ":player_uuid/games/:game_uuid/:venue" do

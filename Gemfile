@@ -11,6 +11,8 @@ group :development, :test do
   gem 'uuid'
   gem 'rake'
 
+  gem 'datastore-backend', "~> 0.0.11"
+  gem 'devcenter-backend', "~> 0.0.23"
   gem 'graph-backend', "~> 0.0.14"
   gem 'auth-backend', "~> 0.0.15"
   gem 'uuid'

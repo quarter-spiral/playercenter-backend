@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'auth-client', '>= 0.0.13'
   gem.add_dependency 'graph-client', '>= 0.0.10'
+  gem.add_dependency 'devcenter-client', '>= 0.0.2'
 
   gem.add_dependency 'grape', '>=0.2.2'
   gem.add_dependency 'json', '1.7.4'
