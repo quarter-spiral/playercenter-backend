@@ -1,4 +1,4 @@
-# 0.0.16 WIP
+# 0.0.16
 
 * Adds game/player metadata endpoints
 
