@@ -20,6 +20,13 @@ module Playercenter::Backend
 
     error_format :json
 
+    rescue_from Error::InvalidPlayerMetaDataError do |e|
+        Rack::Response.new({
+            'status' => 415,
+            'message' => e.message
+        }.to_json, 415)
+    end
+
     helpers do
       def connection
         @connection ||= Connection.create
@@ -61,7 +68,7 @@ module Playercenter::Backend
       header('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS, POST, DELETE')
       header('Access-Control-Max-Age', '1728000')
       ""
-    end    
+    end
 
     get ":uuid" do
       uuid = params[:uuid]
@@ -108,6 +115,40 @@ module Playercenter::Backend
         connection.devcenter.list_games(uuids.map &:first)
       end
       {games: games}
+    end
+
+
+    get ":player_uuid/games/:game_uuid/meta-data" do
+      player = params[:player_uuid]
+      game = params[:game_uuid]
+      data = try_twice_and_avoid_token_expiration do
+        connection.graph.relationship_metadata(player, game, token, 'plays')
+      end
+      {meta: MetaData.from_graph(data)}
+    end
+
+
+    [":player_uuid/games/:game_uuid/meta-data", ":player_uuid/games/:game_uuid/meta-data/:property"].each do |url|
+      put url do
+        player = params[:player_uuid]
+        game = params[:game_uuid]
+        data = (params[:meta] || {}).to_hash
+        property = params[:property]
+
+        old_data = MetaData.from_graph(connection.graph.relationship_metadata(player, game, token, 'plays'))
+
+        data = try_twice_and_avoid_token_expiration do
+          if property
+            new_value = data.delete(property)
+            new_data = new_value ? {property => new_value} : {}
+            data = old_data.merge(new_data)
+          end
+
+          response = connection.graph.add_relationship(player, game, token, 'plays', meta: MetaData.to_graph(data))
+          response.raw.status == 200 ? response.data.first['meta'] : MetaData.to_graph(old_data)
+        end
+        {meta: MetaData.from_graph(data)}
+      end
     end
 
     post ":player_uuid/games/:game_uuid/:venue" do

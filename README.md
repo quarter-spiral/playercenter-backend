@@ -203,3 +203,93 @@ Empty.
 #### Response
 
 Returns status code 201 if the player was registered as a new player of the game, 304 if the player already plays the game on that venue. If the player already plays the game but not on that venue a 200 status code is returned instead. The body is empty.
+
+
+### Set player's game meta data
+
+#### Request
+
+**PUT** to ``/:PLAYER-UUID:/games/:GAME-UUID:/meta-data/:KEY:``
+
+##### Parameters
+
+- **PLAYER-UUID** [REQUIRED]: The UUID of the player who you want to set the meta data for
+- **GAME-UUID** [REQUIRED]: The UUID of a game the you want to set the meta data for
+- **KEY** [OPTIONAL] A key name in the metadata object. If set only this key will be updated.
+
+##### Body
+
+JSON encoded object of meta data under a ``meta`` key like this:
+
+```javascript
+{
+  "meta": {
+    "highscore": 100,
+    "levelsCompleted": "[1,2,3]",
+    "playedTutorial": true
+  }
+}
+```
+
+Only numbers, boolean values and strings are accepted as meta data values. If you need more complex types as arrays and objects you can always encode them as strings, e.g. in JSON notation.
+
+If the ``KEY`` parameter is set you still provide an object as the body. Nonetheless, the request will only change the specified key of the metadata. E.g. if you only want to change the high score to ``112``, you can issue a **PUT** to ``/:PLAYER-UUID:/games/:GAME-UUID:/meta-data/highscore`` with a JSON encoded body of this object:
+
+```javascript
+{
+  "meta": {
+    "highscore": 110
+  }
+}
+```
+
+#### Response
+
+Returns status code 200 if the data was set successfully. Returns status code 415 if wrong data types are used in the meta data.
+
+##### Body
+
+JSON encoded meta data object of the changed meta data. This always returns the whole meta data object even when a ``KEY`` parameter was present.
+
+Example:
+
+```javascript
+{
+  "meta": {
+    "highscore": 110,
+    "levelsCompleted": "[1,2,3]",
+    "playedTutorial": true
+  }
+}
+```
+
+### Retrieve player's game meta data
+
+#### Request
+
+**GET** to ``/:PLAYER-UUID:/games/:GAME-UUID:/meta-data``
+
+##### Parameters
+
+- **PLAYER-UUID** [REQUIRED]: The UUID of the player who you want to get the meta data for
+- **GAME-UUID** [REQUIRED]: The UUID of a game the you want to set get meta data for
+
+##### Body
+
+Empty.
+
+#### Response
+
+JSON encoded meta data object.
+
+Example:
+
+```javascript
+{
+  "meta": {
+    "highscore": 110,
+    "levelsCompleted": "[1,2,3]",
+    "playedTutorial": true
+  }
+}
+```

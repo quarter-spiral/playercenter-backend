@@ -23,7 +23,7 @@ PATH
       auth-client (>= 0.0.13)
       devcenter-client (>= 0.0.2)
       grape (>= 0.2.2)
-      graph-client (>= 0.0.10)
+      graph-client (>= 0.0.11)
       json (= 1.7.4)
 
 GEM
@@ -84,13 +84,13 @@ GEM
       commander
       json
       service-client (>= 0.0.7)
-    devcenter-backend (0.0.23)
+    devcenter-backend (0.0.26)
       auth-client (>= 0.0.14)
       datastore-client (>= 0.0.9)
       grape (= 0.2.3.qs)
       graph-client (>= 0.0.9)
       json (= 1.7.4)
-    devcenter-client (0.0.2)
+    devcenter-client (0.0.3)
       service-client (>= 0.0.9)
     erubis (2.7.0)
     eventmachine (1.0.0)
@@ -105,12 +105,12 @@ GEM
       rack-accept
       rack-mount
       virtus
-    graph-backend (0.0.14)
+    graph-backend (0.0.15)
       auth-client (>= 0.0.14)
       grape (>= 0.2.0)
       json (= 1.7.4)
       neography (= 1.0.2)
-    graph-client (0.0.10)
+    graph-client (0.0.11)
       commander
       service-client (>= 0.0.9)
     hashie (1.2.0)
@@ -136,7 +136,7 @@ GEM
       activemodel (~> 3.1)
       mongo (<= 1.6.2)
       tzinfo (~> 0.3.22)
-    multi_json (1.3.7)
+    multi_json (1.4.0)
     multi_xml (0.5.1)
     multipart-post (1.1.5)
     neography (1.0.2)
@@ -186,7 +186,7 @@ GEM
       sinatra (~> 1.0)
     sinatra-flash (0.3.0)
       sinatra (>= 1.0.0)
-    sprockets (2.2.1)
+    sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
@@ -216,7 +216,7 @@ DEPENDENCIES
   auth-backend (~> 0.0.15)
   datastore-backend (~> 0.0.11)
   devcenter-backend (~> 0.0.23)
-  graph-backend (~> 0.0.14)
+  graph-backend (~> 0.0.15)
   nokogiri
   playercenter-backend!
   rack-client

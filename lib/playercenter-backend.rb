@@ -6,6 +6,8 @@ end
 
 require "playercenter-backend/version"
 require "playercenter-backend/utils"
+require "playercenter-backend/error"
+require "playercenter-backend/meta_data"
 require "playercenter-backend/venue"
 require "playercenter-backend/connection"
 require "playercenter-backend/api"

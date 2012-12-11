@@ -1,3 +1,7 @@
+# 0.0.16 WIP
+
+* Adds game/player metadata endpoints
+
 # 0.0.15
 
 * Adds CORS headers and OPTION endpoints to the API
