@@ -1,4 +1,4 @@
-# 0.0.17 WIP
+# 0.0.17
 
 * Fixes a bug saving ``false`` values in the game/player meta data
 
