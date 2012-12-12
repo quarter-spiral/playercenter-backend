@@ -139,9 +139,13 @@ module Playercenter::Backend
 
         data = try_twice_and_avoid_token_expiration do
           if property
-            new_value = data.delete(property)
-            new_data = new_value ? {property => new_value} : {}
-            data = old_data.merge(new_data)
+            if data.has_key?(property)
+              new_value = data.delete(property)
+              new_data = {property => new_value}
+              data = old_data.merge(new_data)
+            else
+              data = old_data
+            end
           end
 
           response = connection.graph.add_relationship(player, game, token, 'plays', meta: MetaData.to_graph(data))

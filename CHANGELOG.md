@@ -1,3 +1,7 @@
+# 0.0.17 WIP
+
+* Fixes a bug saving ``false`` values in the game/player meta data
+
 # 0.0.16
 
 * Adds game/player metadata endpoints

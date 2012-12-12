@@ -66,6 +66,26 @@ describe Playercenter::Backend::API do
       data.must_equal("meta" => {"highscore" => 130, "name" => "Peter", "tutorialPlayed" => true})
     end
 
+    it "can set single properties to true and then back to false" do
+      response = client.put "/v1/#{user['uuid']}/games/#{@game}/meta-data/tutorialPlayed", @auth_options, JSON.dump(meta: {"tutorialPlayed" => true})
+      response.status.must_equal 200
+      data = JSON.parse(response.body)
+      data.must_equal("meta" => {"tutorialPlayed" => true})
+
+      response = client.get "/v1/#{user['uuid']}/games/#{@game}/meta-data/", @auth_options
+      data = JSON.parse(response.body)
+      data.must_equal("meta" => {"tutorialPlayed" => true})
+
+      response = client.put "/v1/#{user['uuid']}/games/#{@game}/meta-data/tutorialPlayed", @auth_options, JSON.dump(meta: {"tutorialPlayed" => false})
+      response.status.must_equal 200
+      data = JSON.parse(response.body)
+      data.must_equal("meta" => {"tutorialPlayed" => false})
+
+      response = client.get "/v1/#{user['uuid']}/games/#{@game}/meta-data/", @auth_options
+      data = JSON.parse(response.body)
+      data.must_equal("meta" => {"tutorialPlayed" => false})
+    end
+
     describe "does not allow" do
       after do
         response = client.get "/v1/#{user['uuid']}/games/#{@game}/meta-data/", @auth_options
