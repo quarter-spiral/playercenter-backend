@@ -1,4 +1,4 @@
-# 0.0.18 WIP
+# 0.0.18
 
 * Adds player meta data to friend retrieval end point
 
