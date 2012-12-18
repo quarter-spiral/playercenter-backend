@@ -172,23 +172,36 @@ module Playercenter::Backend
 
     get ":uuid/friends" do
       uuid = params[:uuid]
-
       game = params[:game]
+      meta = params[:meta]
+      meta = JSON.parse(meta) if meta && meta.kind_of?(String)
+      meta_results = nil
 
       try_twice_and_avoid_token_expiration do
         uuids = nil
         if game
-          uuids = connection.graph.query(token, [uuid, game], "MATCH node0-[:friends]->friend-[:plays]->game WHERE game = node1 RETURN DISTINCT friend.uuid").map &:first
+          query = "MATCH node0-[:friends]->friend-[p:plays]->game WHERE game = node1 RETURN DISTINCT friend.uuid"
+          query = "#{query}, #{meta.map {|m| "p.#{MetaData::PREFIX}#{m}!"}.join(', ')}" if meta
+          uuids = []
+          meta_results = {}
+          connection.graph.query(token, [uuid, game], query).each do |result|
+            uuid = result.shift
+            uuids << uuid
+            meta_results[uuid] = result
+          end
         else
           uuids = connection.graph.list_related_entities(uuid, token, 'friends')
         end
-
         identities = connection.auth.venue_identities_of(token, *uuids)
 
         # Make up for the different response format of the auth-backend
         # depending on if you request venue identities for one or many
         # UUIDs
         identities = {uuids.first => identities} if uuids.size == 1
+
+        if meta && meta_results
+          identities = Hash[identities.map {|uuid, identity| [uuid, identity.merge('meta' => Hash[meta.zip(meta_results[uuid])])]}]
+        end
 
         identities
       end
@@ -221,7 +234,8 @@ module Playercenter::Backend
       venue_identities = try_twice_and_avoid_token_expiration do
         connection.auth.venue_identities_of(token, params[:uuid])
       end
-      identity = venue_identities[params[:venue_id]]
+      # identity = venue_identities[params[:venue_id]]
+      identity = venue_identities['facebook'] # <-- Dirty hack till we have real friends on all venues
 
       redirect "https://graph.facebook.com/#{identity['id']}/picture"
     end

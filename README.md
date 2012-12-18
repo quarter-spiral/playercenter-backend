@@ -57,6 +57,7 @@ All information under the ``venue`` is present for each venue this player is pla
 JSON encoded object with further options:
 
 * **game**: If present only displays friends who play the game with the given UUID
+* **meta**: An array of keys of player meta data that is added to each friend. This parameter requires the game parameter to be set as the meta data is stored per player/game pair.
 
 #### Response
 
@@ -76,6 +77,33 @@ JSON encoded object mapping a friend's UUID to an object of player info (see *Re
       "spiral-galaxy": {
         "id": "87233",
         "name": "Peter Smith"
+      }
+    }
+  },
+  "other-uuid": {
+    …
+  }
+}
+```
+
+If the ``meta`` parameter is set the meta results will be added as another venue called ``meta`` like this:
+
+```javascript
+{
+  "some-uuid":  {
+    "uuid": "some-uuid",
+    "venue": {
+      "facebook": {
+        "id": "1234",
+        "name": "The Peter"
+      },
+      "spiral-galaxy": {
+        "id": "87233",
+        "name": "Peter Smith"
+      },
+      "meta": {
+        "highScore": 100,
+        "lastLevel": "Good Chamber"
       }
     }
   },

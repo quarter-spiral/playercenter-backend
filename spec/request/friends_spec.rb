@@ -44,12 +44,12 @@ describe Playercenter::Backend::API do
         @game2 = @game2.uuid
         @game3 = @game3.uuid
 
-        connection.graph.add_relationship(@uuid1, @game1, app_token, 'plays', meta: {'venueFacebook' => true})
-        connection.graph.add_relationship(@uuid2, @game1, app_token, 'plays', meta: {'venueFacebook' => true})
-        connection.graph.add_relationship(@uuid3, @game1, app_token, 'plays', meta: {'venueFacebook' => true})
-        connection.graph.add_relationship(@uuid3, @game2, app_token, 'plays', meta: {'venueGalaxySpiral' => true})
-        connection.graph.add_relationship(@uuid3, @game3, app_token, 'plays', meta: {'venueFacebook' => true})
-        connection.graph.add_relationship(@uuid4, @game1, app_token, 'plays', meta: {'venueFacebook' => true, 'venueGalaxySpiral' => true})
+        connection.graph.add_relationship(@uuid1, @game1, app_token, 'plays', meta: {'venueFacebook' => true, "#{MetaData::PREFIX}highScore" => 111, "#{MetaData::PREFIX}lastLevel" => "Mighty Tower"})
+        connection.graph.add_relationship(@uuid2, @game1, app_token, 'plays', meta: {'venueFacebook' => true, "#{MetaData::PREFIX}highScore" => 212})
+        connection.graph.add_relationship(@uuid3, @game1, app_token, 'plays', meta: {'venueFacebook' => true, "#{MetaData::PREFIX}highScore" => 313, "#{MetaData::PREFIX}lastLevel" => "Power Hall"})
+        connection.graph.add_relationship(@uuid3, @game2, app_token, 'plays', meta: {'venueGalaxySpiral' => true, "#{MetaData::PREFIX}highScore" => 323, "#{MetaData::PREFIX}lastLevel" => "Arcades"})
+        connection.graph.add_relationship(@uuid3, @game3, app_token, 'plays', meta: {'venueFacebook' => true, "#{MetaData::PREFIX}highScore" => 333, "#{MetaData::PREFIX}lastLevel" => "That"})
+        connection.graph.add_relationship(@uuid4, @game1, app_token, 'plays', meta: {'venueFacebook' => true, 'venueGalaxySpiral' => true, "#{MetaData::PREFIX}highScore" => 414, "#{MetaData::PREFIX}lastLevel" => "Mighty Tower"})
 
         connection.graph.add_relationship(@uuid1, @uuid2, app_token, 'friends')
         connection.graph.add_relationship(@uuid1, @uuid4, app_token, 'friends')
@@ -93,6 +93,35 @@ describe Playercenter::Backend::API do
         friends = JSON.parse(response.body)
         friends.keys.size.must_equal 1
         friends.keys.must_include @uuid3
+      end
+
+      it "can add meta info to friends" do
+        @user_token5 = connection.auth.venue_token(app_token, 'facebook', 'venue-id' => '723994', 'name' => 'Paul II')
+        @uuid5 = connection.auth.token_owner(@user_token5)['uuid']
+        connection.graph.add_relationship(@uuid5, @game1, app_token, 'plays', meta: {'venueFacebook' => true, "#{MetaData::PREFIX}lastLevel" => "Good Chamber"})
+        connection.graph.add_relationship(@uuid4, @uuid5, app_token, 'friends')
+
+        response = client.get "/v1/#{@uuid4}/friends", {"Authorization" => "Bearer #{@user_token4}"}, JSON.dump(game: @game1, meta: ['highScore'])
+        response.status.must_equal 200
+        friends = JSON.parse(response.body)
+        friends.keys.size.must_equal 3
+        friends.keys.must_include @uuid1
+        friends.keys.must_include @uuid3
+        friends.keys.must_include @uuid5
+        friends[@uuid1]['meta'].must_equal('highScore' => 111)
+        friends[@uuid3]['meta'].must_equal('highScore' => 313)
+        friends[@uuid5]['meta'].must_equal('highScore' => nil)
+
+        response = client.get "/v1/#{@uuid4}/friends", {"Authorization" => "Bearer #{@user_token4}"}, JSON.dump(game: @game1, meta: ['highScore', 'lastLevel'])
+        response.status.must_equal 200
+        friends = JSON.parse(response.body)
+        friends.keys.size.must_equal 3
+        friends.keys.must_include @uuid1
+        friends.keys.must_include @uuid3
+        friends.keys.must_include @uuid5
+        friends[@uuid1]['meta'].must_equal('highScore' => 111, 'lastLevel' => 'Mighty Tower')
+        friends[@uuid3]['meta'].must_equal('highScore' => 313, 'lastLevel' => 'Power Hall')
+        friends[@uuid5]['meta'].must_equal('highScore' => nil, 'lastLevel' => 'Good Chamber')
       end
 
       it "can list the games a player's friends play" do
