@@ -1,3 +1,7 @@
+# 0.0.19 WIP
+
+* Adds Newrelic monitoring and ping middleware
+
 # 0.0.18
 
 * Adds player meta data to friend retrieval end point
