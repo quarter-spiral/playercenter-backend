@@ -23,6 +23,6 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'grape', '>=0.2.2'
   gem.add_dependency 'json', '1.7.4'
-  gem.add_dependency 'newrelic_rpm', '~> 3.5.4.33'
   gem.add_dependency 'ping-middleware', '~> 0.0.2'
+  gem.add_dependency 'grape_newrelic', '~> 0.0.3'
 end

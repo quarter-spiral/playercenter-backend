@@ -1,7 +1,10 @@
 require 'grape'
+require 'grape_newrelic'
 
 module Playercenter::Backend
   class API < ::Grape::API
+    use GrapeNewrelic::Instrumenter
+
     class TokenStore
       def self.token(connection)
         @token ||= connection.auth.create_app_token(ENV['QS_OAUTH_CLIENT_ID'], ENV['QS_OAUTH_CLIENT_SECRET'])
