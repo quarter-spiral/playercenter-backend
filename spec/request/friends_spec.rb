@@ -62,7 +62,7 @@ describe Playercenter::Backend::API do
         response = client.get "/v1/#{@uuid1}/friends", "Authorization" => "Bearer #{@user_token1}"
         response.status.must_equal 200
         friends = JSON.parse(response.body)
-        friends.keys.size.must_equal 2
+        friends.keys.size.must_equal 3
         friends.keys.must_include @uuid2
         friends[@uuid2].must_equal 'facebook' => {'id' => '42568', 'name' => 'Pete'}
         friends.keys.must_include @uuid4
@@ -71,28 +71,40 @@ describe Playercenter::Backend::API do
         response = client.get "/v1/#{@uuid2}/friends", "Authorization" => "Bearer #{@user_token2}"
         response.status.must_equal 200
         friends = JSON.parse(response.body)
-        friends.keys.size.must_equal 1
+        friends.keys.size.must_equal 2
         friends.keys.must_include @uuid3
 
         response = client.get "/v1/#{@uuid3}/friends", "Authorization" => "Bearer #{@user_token3}"
         response.status.must_equal 200
         friends = JSON.parse(response.body)
-        friends.keys.empty?.must_equal true
+        friends.keys.size.must_equal 1
+        friends.keys.must_include @uuid3
+      end
+
+      it "includes the requester itself" do
+        response = client.get "/v1/#{@uuid1}/friends", "Authorization" => "Bearer #{@user_token1}"
+        response.status.must_equal 200
+        friends = JSON.parse(response.body)
+        friends.keys.size.must_equal 3
+        friends.keys.must_include @uuid1
+        friends[@uuid1].must_equal 'facebook' => {'id' => '12345', 'name' => 'Sam'}
       end
 
       it "can list friends by game" do
         response = client.get "/v1/#{@uuid4}/friends", {"Authorization" => "Bearer #{@user_token4}"}, JSON.dump(game: @game1)
         response.status.must_equal 200
         friends = JSON.parse(response.body)
-        friends.keys.size.must_equal 2
+        friends.keys.size.must_equal 3
         friends.keys.must_include @uuid1
         friends.keys.must_include @uuid3
+        friends.keys.must_include @uuid4
 
         response = client.get "/v1/#{@uuid4}/friends", {"Authorization" => "Bearer #{@user_token4}"}, JSON.dump(game: @game2)
         response.status.must_equal 200
         friends = JSON.parse(response.body)
-        friends.keys.size.must_equal 1
+        friends.keys.size.must_equal 2
         friends.keys.must_include @uuid3
+        friends.keys.must_include @uuid4
       end
 
       it "can add meta info to friends" do
@@ -104,23 +116,25 @@ describe Playercenter::Backend::API do
         response = client.get "/v1/#{@uuid4}/friends", {"Authorization" => "Bearer #{@user_token4}"}, JSON.dump(game: @game1, meta: ['highScore'])
         response.status.must_equal 200
         friends = JSON.parse(response.body)
-        friends.keys.size.must_equal 3
+        friends.keys.size.must_equal 4
         friends.keys.must_include @uuid1
         friends.keys.must_include @uuid3
         friends.keys.must_include @uuid5
         friends[@uuid1]['meta'].must_equal('highScore' => 111)
         friends[@uuid3]['meta'].must_equal('highScore' => 313)
+        friends[@uuid4]['meta'].must_equal('highScore' => 414)
         friends[@uuid5]['meta'].must_equal('highScore' => nil)
 
         response = client.get "/v1/#{@uuid4}/friends", {"Authorization" => "Bearer #{@user_token4}"}, JSON.dump(game: @game1, meta: ['highScore', 'lastLevel'])
         response.status.must_equal 200
         friends = JSON.parse(response.body)
-        friends.keys.size.must_equal 3
+        friends.keys.size.must_equal 4
         friends.keys.must_include @uuid1
         friends.keys.must_include @uuid3
         friends.keys.must_include @uuid5
         friends[@uuid1]['meta'].must_equal('highScore' => 111, 'lastLevel' => 'Mighty Tower')
         friends[@uuid3]['meta'].must_equal('highScore' => 313, 'lastLevel' => 'Power Hall')
+        friends[@uuid4]['meta'].must_equal('highScore' => 414, 'lastLevel' => 'Mighty Tower')
         friends[@uuid5]['meta'].must_equal('highScore' => nil, 'lastLevel' => 'Good Chamber')
       end
 
@@ -193,7 +207,8 @@ describe Playercenter::Backend::API do
       response = client.get "/v1/#{uuid1}/friends", "Authorization" => "Bearer #{user_token1}"
       response.status.must_equal 200
       friends = JSON.parse(response.body)
-      friends.keys.size.must_equal 2
+      friends.keys.size.must_equal 3
+      friends.keys.must_include uuid1
       friends.keys.must_include uuid2
       friends.keys.must_include uuid3
     end

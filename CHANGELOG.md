@@ -1,3 +1,7 @@
+# 0.0.21 WIP
+
+* Includes the requester into all friends lists
+
 # 0.0.20
 
 * Improve Newrelic instrumenting

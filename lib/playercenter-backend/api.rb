@@ -174,7 +174,7 @@ module Playercenter::Backend
     end
 
     get ":uuid/friends" do
-      uuid = params[:uuid]
+      requester_uuid = params[:uuid]
       game = params[:game]
       meta = params[:meta]
       meta = JSON.parse(meta) if meta && meta.kind_of?(String)
@@ -187,14 +187,17 @@ module Playercenter::Backend
           query = "#{query}, #{meta.map {|m| "p.#{MetaData::PREFIX}#{m}!"}.join(', ')}" if meta
           uuids = []
           meta_results = {}
-          connection.graph.query(token, [uuid, game], query).each do |result|
+          connection.graph.query(token, [requester_uuid, game], query).each do |result|
             uuid = result.shift
             uuids << uuid
             meta_results[uuid] = result
           end
         else
-          uuids = connection.graph.list_related_entities(uuid, token, 'friends')
+          uuids = connection.graph.list_related_entities(requester_uuid, token, 'friends')
         end
+        uuids.unshift requester_uuid
+        uuids.uniq!
+
         identities = connection.auth.venue_identities_of(token, *uuids)
 
         # Make up for the different response format of the auth-backend
@@ -203,6 +206,11 @@ module Playercenter::Backend
         identities = {uuids.first => identities} if uuids.size == 1
 
         if meta && meta_results
+          requester_meta_query  = "MATCH node0-[p:plays]->game WHERE game = node1 RETURN DISTINCT node0.uuid"
+          requester_meta_query  = "#{requester_meta_query }, #{meta.map {|m| "p.#{MetaData::PREFIX}#{m}!"}.join(', ')}"
+          result = connection.graph.query(token, [requester_uuid, game], requester_meta_query ).first
+          meta_results[requester_uuid] = result[1..-1]
+
           identities = Hash[identities.map {|uuid, identity| [uuid, identity.merge('meta' => Hash[meta.zip(meta_results[uuid])])]}]
         end
 

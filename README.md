@@ -61,6 +61,8 @@ JSON encoded object with further options:
 
 #### Response
 
+Please note that the list of friends always includes the requester itself, too.
+
 ##### Body
 
 JSON encoded object mapping a friend's UUID to an object of player info (see *Retrieve information about a player*) like this:
