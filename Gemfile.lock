@@ -19,7 +19,7 @@ GIT
 PATH
   remote: .
   specs:
-    playercenter-backend (0.0.20)
+    playercenter-backend (0.0.21)
       auth-client (>= 0.0.13)
       devcenter-client (>= 0.0.2)
       grape (>= 0.2.2)
@@ -151,7 +151,7 @@ GEM
       os (>= 0.9.6)
       rake (>= 0.8.7)
       rubyzip (>= 0.9.7)
-    newrelic_rpm (3.5.4.33)
+    newrelic_rpm (3.5.4.34)
     nokogiri (1.5.5)
     os (0.9.6)
     padrino-core (0.10.7)

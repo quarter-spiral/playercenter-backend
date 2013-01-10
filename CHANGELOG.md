@@ -1,4 +1,4 @@
-# 0.0.21 WIP
+# 0.0.21
 
 * Includes the requester into all friends lists
 
