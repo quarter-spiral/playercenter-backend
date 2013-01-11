@@ -16,7 +16,7 @@ class RackCors
   def call(env)
     response = options_request?(env) ? options_response : @app.call(env)
 
-    response_with_cors_headers(*response)
+    response_with_cors_headers(env, *response)
   end
 
   protected
@@ -32,8 +32,8 @@ class RackCors
     }, ['']]
   end
 
-  def response_with_cors_headers(status, headers, body)
-    headers['Access-Control-Allow-Origin'] = '*'
+  def response_with_cors_headers(env, status, headers, body)
+    headers['Access-Control-Allow-Origin'] = env['HTTP_ORIGIN'] || '*'
     [status, headers, body]
   end
 end

@@ -57,7 +57,8 @@ module Playercenter::Backend
     end
 
     before do
-      header('Access-Control-Allow-Origin', '*')
+
+      header('Access-Control-Allow-Origin', request.env['HTTP_ORIGIN'] || '*')
 
       unless authentication_exception?
         error!('Unauthenticated', 403) unless request.env['HTTP_AUTHORIZATION']

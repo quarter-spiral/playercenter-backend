@@ -1,3 +1,7 @@
+# 0.0.22 WIP
+
+* Fixes CORS headers
+
 # 0.0.21
 
 * Includes the requester into all friends lists
