@@ -27,7 +27,7 @@ JSON encoded object like this:
 ```javascript
 {
   "uuid": "some-uuid",
-  "venue": {
+  "venues": {
     "facebook": {
       "id": "1234",
       "name": "The Peter"
@@ -40,7 +40,7 @@ JSON encoded object like this:
 }
 ```
 
-All information under the ``venue`` is present for each venue this player is playing a Quarter Spiral game on.
+All information under the ``venues`` is present for each venue this player is playing a Quarter Spiral game on.
 
 ### List player's friends
 
@@ -71,15 +71,13 @@ JSON encoded object mapping a friend's UUID to an object of player info (see *Re
 {
   "some-uuid":  {
     "uuid": "some-uuid",
-    "venue": {
-      "facebook": {
-        "id": "1234",
-        "name": "The Peter"
-      },
-      "spiral-galaxy": {
-        "id": "87233",
-        "name": "Peter Smith"
-      }
+    "facebook": {
+      "id": "1234",
+      "name": "The Peter"
+    },
+    "spiral-galaxy": {
+      "id": "87233",
+      "name": "Peter Smith"
     }
   },
   "other-uuid": {
@@ -94,19 +92,17 @@ If the ``meta`` parameter is set the meta results will be added as another venue
 {
   "some-uuid":  {
     "uuid": "some-uuid",
-    "venue": {
-      "facebook": {
-        "id": "1234",
-        "name": "The Peter"
-      },
-      "spiral-galaxy": {
-        "id": "87233",
-        "name": "Peter Smith"
-      },
-      "meta": {
-        "highScore": 100,
-        "lastLevel": "Good Chamber"
-      }
+    "facebook": {
+      "id": "1234",
+      "name": "The Peter"
+    },
+    "spiral-galaxy": {
+      "id": "87233",
+      "name": "Peter Smith"
+    },
+    "meta": {
+      "highScore": 100,
+      "lastLevel": "Good Chamber"
     }
   },
   "other-uuid": {

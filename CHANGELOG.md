@@ -1,3 +1,7 @@
+# 0.0.23 WIP
+
+* Fixes documentation errors
+
 # 0.0.22
 
 * Fixes CORS headers
