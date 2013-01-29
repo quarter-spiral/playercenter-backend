@@ -6,7 +6,7 @@ A backend to gather and store data about players.
 
 ### Retrieve public information about a player
 
-Does not need any authentication.
+Does not need any authentication. The response from this endpoint is very close to the non-public information about players (**GET** ``/:UUID:``) . It omits any sensible data (e.g. venue specific IDs), though.
 
 #### Request
 
@@ -42,7 +42,70 @@ JSON encoded object like this:
 
 All information under the ``venues`` is present for each venue this player is playing a Quarter Spiral game on.
 
-The response from this endpoint is very close to the non-public information about players (**GET** ``/:UUID:``) . It omits any sensible data (e.g. venue specific IDs), though.
+### List player's friends public information
+
+This endpoint does not need any authentication and resembles closely the ``List player's friends`` endpoint (**GET** to ``/:UUID:/friends``) which needs to be called authenticated over OAuth. This endpoint will only return publicly available information about friends.
+
+#### Request
+
+**GET** ``/public/:UUID:/friends``
+
+##### Parameters
+
+- **UUID** [REQUIRED]: The UUID of the player who's friends you want to retrieve.
+
+##### Body
+
+Empty
+
+#### Response
+
+Please note that the list of friends always includes the requester itself, too.
+
+##### Body
+
+JSON encoded object mapping a friend's UUID to an object of player info (see *Retrieve public information about a player*) like this:
+
+```javascript
+{
+  "some-uuid":  {
+    "uuid": "some-uuid",
+    "facebook": {
+      "name": "The Peter"
+    },
+    "spiral-galaxy": {
+      "name": "Peter Smith"
+    }
+  },
+  "other-uuid": {
+    …
+  }
+}
+```
+
+### List the games a player plays
+
+This endpoint does not need authentication.
+
+#### Request
+
+**GET** to ``/public/:UUID:/games``
+
+##### Parameters
+
+- **UUID** [REQUIRED]: The UUID of the player who's games are going to be retrieved
+
+##### Body
+
+JSON encoded Object with additional options:
+
+* **venue**: If set only games that the player play's on the given venue will be listed
+
+#### Response
+
+##### Body
+
+JSON encoded object of games in the way the ``devcenter-backend`` public API returns game lists.
 
 ### Retrieve information about a player
 
@@ -151,27 +214,13 @@ If the ``meta`` parameter is set the meta results will be added as another venue
 }
 ```
 
-### List the games a player plays
+### [DEPRECATED] List the games a player plays
 
 #### Request
 
 **GET** to ``/:UUID:/games``
 
-##### Parameters
-
-- **UUID** [REQUIRED]: The UUID of the player who's games are going to be retrieved
-
-##### Body
-
-JSON encoded Object with additional options:
-
-* **venue**: If set only games that the player play's on the given venue will be listed
-
-#### Response
-
-##### Body
-
-JSON encoded object of games in the way the ``devcenter-backend`` public API returns game lists.
+This endpoint is deprecated in favor of the public endpoint at ``/public/:UUID:/games`` which behaves the same but does not require authentication. You must use the public endpoint instead.
 
 ### List the games the friends of a player play
 

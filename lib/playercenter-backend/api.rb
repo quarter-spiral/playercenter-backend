@@ -74,6 +74,21 @@ env['PATH_INFO'] =~ /^\/public\//
           [venue, public_identity]
         end]
       end
+
+      def get_games_for(uuid, venue = nil)
+        games = try_twice_and_avoid_token_expiration do
+          uuids = nil
+          if venue
+            venue = "venue#{Utils.camelize_string(venue)}"
+            uuids = connection.graph.query(token, [uuid], "MATCH node0-[p:plays]->game WHERE p.#{venue}! = true RETURN DISTINCT game.uuid").map &:first
+          else
+            uuids = connection.graph.list_related_entities(uuid, token, 'plays')
+          end
+
+          connection.devcenter.list_games(uuids)
+        end
+        {games: games}
+      end
     end
 
     before do
@@ -100,6 +115,30 @@ env['PATH_INFO'] =~ /^\/public\//
       {uuid: uuid, venues: venue_identities}
     end
 
+    get "public/:uuid/friends" do
+      requester_uuid = params[:uuid]
+
+      try_twice_and_avoid_token_expiration do
+        uuids = connection.graph.list_related_entities(requester_uuid, token, 'friends')
+
+        uuids.unshift requester_uuid
+        uuids.uniq!
+
+        identities = connection.auth.venue_identities_of(token, *uuids)
+
+        # Make up for the different response format of the auth-backend
+        # depending on if you request venue identities for one or many
+        # UUIDs
+        identities = {uuids.first => identities} if uuids.size == 1
+
+        Hash[identities.map {|uuid, identities| [uuid, strip_private_parts_from_venue_identities(identities)]}]
+      end
+    end
+
+    get "/public/:uuid/games" do
+      get_games_for(params[:uuid], params[:venue])
+    end
+
     get ":uuid" do
       uuid = params[:uuid]
       venue_identities = venue_identities_for(uuid)
@@ -107,21 +146,7 @@ env['PATH_INFO'] =~ /^\/public\//
     end
 
     get ":uuid/games" do
-      uuid = params[:uuid]
-      venue = params[:venue]
-
-      games = try_twice_and_avoid_token_expiration do
-        uuids = nil
-        if venue
-          venue = "venue#{Utils.camelize_string(venue)}"
-          uuids = connection.graph.query(token, [uuid], "MATCH node0-[p:plays]->game WHERE p.#{venue}! = true RETURN DISTINCT game.uuid").map &:first
-        else
-          uuids = connection.graph.list_related_entities(uuid, token, 'plays')
-        end
-
-        connection.devcenter.list_games(uuids)
-      end
-      {games: games}
+      get_games_for(params[:uuid], params[:venue])
     end
 
     get ":uuid/games/friends" do

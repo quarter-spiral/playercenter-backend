@@ -1,3 +1,8 @@
+# 0.0.24 WIP
+
+* Adds public endpoint to retrieve games a user plays
+* Adds public endpoint to retrieve a user's friends
+
 # 0.0.23
 
 * Adds an endpoint for public player information

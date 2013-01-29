@@ -81,6 +81,29 @@ describe Playercenter::Backend::API do
         friends.keys.must_include @uuid3
       end
 
+      it "works unauthenticated over the public API" do
+        response = client.get "/v1/public/#{@uuid1}/friends", "Authorization" => "Bearer #{@user_token1}"
+        response.status.must_equal 200
+        friends = JSON.parse(response.body)
+        friends.keys.size.must_equal 3
+        friends.keys.must_include @uuid2
+        friends[@uuid2].must_equal 'facebook' => {'name' => 'Pete'}
+        friends.keys.must_include @uuid4
+        friends[@uuid4].must_equal 'facebook' => {'name' => 'Zack'}
+
+        response = client.get "/v1/public/#{@uuid2}/friends", "Authorization" => "Bearer #{@user_token2}"
+        response.status.must_equal 200
+        friends = JSON.parse(response.body)
+        friends.keys.size.must_equal 2
+        friends.keys.must_include @uuid3
+
+        response = client.get "/v1/public/#{@uuid3}/friends", "Authorization" => "Bearer #{@user_token3}"
+        response.status.must_equal 200
+        friends = JSON.parse(response.body)
+        friends.keys.size.must_equal 1
+        friends.keys.must_include @uuid3
+      end
+
       it "includes the requester itself" do
         response = client.get "/v1/#{@uuid1}/friends", "Authorization" => "Bearer #{@user_token1}"
         response.status.must_equal 200
