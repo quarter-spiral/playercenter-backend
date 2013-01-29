@@ -1,4 +1,4 @@
-# 0.0.23 WIP
+# 0.0.23
 
 * Adds an endpoint for public player information
 * Fixes documentation errors
