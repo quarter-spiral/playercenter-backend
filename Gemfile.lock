@@ -20,7 +20,7 @@ PATH
   remote: .
   specs:
     playercenter-backend (0.0.22)
-      auth-client (>= 0.0.13)
+      auth-client (>= 0.0.14)
       devcenter-client (>= 0.0.2)
       grape (>= 0.2.2)
       grape_newrelic (~> 0.0.3)
@@ -32,9 +32,9 @@ GEM
   remote: https://rubygems.org/
   remote: https://user:We267RFF7BfwVt4LdqFA@privategems.herokuapp.com/
   specs:
-    actionpack (3.2.9)
-      activemodel (= 3.2.9)
-      activesupport (= 3.2.9)
+    actionpack (3.2.11)
+      activemodel (= 3.2.11)
+      activesupport (= 3.2.11)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
       journey (~> 1.0.4)
@@ -42,25 +42,29 @@ GEM
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
       sprockets (~> 2.2.1)
-    activemodel (3.2.9)
-      activesupport (= 3.2.9)
+    activemodel (3.2.11)
+      activesupport (= 3.2.11)
       builder (~> 3.0.0)
-    activerecord (3.2.9)
-      activemodel (= 3.2.9)
-      activesupport (= 3.2.9)
+    activerecord (3.2.11)
+      activemodel (= 3.2.11)
+      activesupport (= 3.2.11)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activesupport (3.2.9)
+    activesupport (3.2.11)
       i18n (~> 0.6)
       multi_json (~> 1.0)
     arel (3.0.2)
-    auth-backend (0.0.17)
+    auth-backend (0.0.26)
       activerecord (>= 3.2.9)
       bcrypt-ruby
       graph-client
       json
       kaminari
+      newrelic_rpm
+      omniauth (~> 1.1.1)
+      omniauth-facebook (~> 1.4.1)
       padrino-helpers
+      ping-middleware (~> 0.0.2)
       sinatra
       sinatra-activerecord
       sinatra-flash
@@ -72,7 +76,7 @@ GEM
     bcrypt-ruby (3.0.1)
     bson (1.6.4)
     builder (3.0.4)
-    commander (4.1.2)
+    commander (4.1.3)
       highline (~> 1.6.11)
     daemons (1.1.9)
     datastore-backend (0.0.11)
@@ -127,9 +131,12 @@ GEM
     httparty (0.9.0)
       multi_json (~> 1.0)
       multi_xml
+    httpauth (0.2.0)
     i18n (0.6.1)
     journey (1.0.4)
     json (1.7.4)
+    jwt (0.1.5)
+      multi_json (>= 1.0)
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -141,7 +148,7 @@ GEM
       activemodel (~> 3.1)
       mongo (<= 1.6.2)
       tzinfo (~> 0.3.22)
-    multi_json (1.4.0)
+    multi_json (1.5.0)
     multi_xml (0.5.1)
     multipart-post (1.1.5)
     neography (1.0.2)
@@ -153,6 +160,20 @@ GEM
       rubyzip (>= 0.9.7)
     newrelic_rpm (3.5.4.34)
     nokogiri (1.5.5)
+    oauth2 (0.8.0)
+      faraday (~> 0.8)
+      httpauth (~> 0.1)
+      jwt (~> 0.1.4)
+      multi_json (~> 1.0)
+      rack (~> 1.2)
+    omniauth (1.1.1)
+      hashie (~> 1.2)
+      rack
+    omniauth-facebook (1.4.1)
+      omniauth-oauth2 (~> 1.1.0)
+    omniauth-oauth2 (1.1.1)
+      oauth2 (~> 0.8.0)
+      omniauth (~> 1.0)
     os (0.9.6)
     padrino-core (0.10.7)
       activesupport (~> 3.2.0)
@@ -175,7 +196,7 @@ GEM
       rack
     rack-mount (0.8.3)
       rack (>= 1.0.0)
-    rack-protection (1.2.0)
+    rack-protection (1.3.2)
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -184,11 +205,11 @@ GEM
     service-client (0.0.9)
       faraday (= 0.8.1)
       json
-    sinatra (1.3.3)
-      rack (~> 1.3, >= 1.3.6)
-      rack-protection (~> 1.2)
+    sinatra (1.3.4)
+      rack (~> 1.4)
+      rack-protection (~> 1.3)
       tilt (~> 1.3, >= 1.3.3)
-    sinatra-activerecord (1.1.2)
+    sinatra-activerecord (1.2.1)
       activerecord (~> 3.0)
       sinatra (~> 1.0)
     sinatra-flash (0.3.0)
@@ -220,13 +241,14 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  auth-backend (~> 0.0.15)
+  auth-backend (~> 0.0.26)
   datastore-backend (~> 0.0.11)
   devcenter-backend (~> 0.0.23)
   graph-backend (~> 0.0.15)
+  kaminari (~> 0.14.1)
   nokogiri
   playercenter-backend!
-  rack-client
+  rack-client (= 0.4.0)
   rake
   sinatra_warden!
   songkick-oauth2-provider!

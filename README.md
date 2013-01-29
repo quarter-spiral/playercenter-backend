@@ -4,6 +4,46 @@ A backend to gather and store data about players.
 
 ## API
 
+### Retrieve public information about a player
+
+Does not need any authentication.
+
+#### Request
+
+**GET** ``/public/:UUID:``
+
+##### Parameters
+
+- **UUID** [REQUIRED]: The UUID of the player you want to retrieve information about.
+
+##### Body
+
+Empty.
+
+#### Response
+
+##### Body
+
+JSON encoded object like this:
+
+```javascript
+{
+  "uuid": "some-uuid",
+  "venues": {
+    "facebook": {
+      "name": "The Peter"
+    },
+    "spiral-galaxy": {
+      "name": "Peter Smith"
+    }
+  }
+}
+```
+
+All information under the ``venues`` is present for each venue this player is playing a Quarter Spiral game on.
+
+The response from this endpoint is very close to the non-public information about players (**GET** ``/:UUID:``) . It omits any sensible data (e.g. venue specific IDs), though.
+
 ### Retrieve information about a player
 
 #### Request

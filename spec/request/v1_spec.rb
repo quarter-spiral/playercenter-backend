@@ -17,12 +17,46 @@ describe Playercenter::Backend::API do
       response.status.must_equal 403
     end
 
-    it "can gather information" do
-      response = client.get "/v1/#{user['uuid']}", 'Authorization' => "Bearer #{token}"
-      response.status.must_equal 200
-      data = JSON.parse(response.body)
-      data['uuid'].must_equal user['uuid']
-      data['venues'].must_equal({})
+    describe "player informations" do
+      before do
+        facebook_options = {
+          "venue-id" => '053324235',
+          "name" =>     'Peter Smith',
+          "email" =>    'peter.smith@example.com'
+        }
+
+        connection.auth.attach_venue_identity_to(token, user['uuid'], 'facebook', facebook_options)
+
+        spiral_galaxy_options = {
+          "venue-id" => '76543675',
+          "name" =>     'Peter S',
+          "email" =>    'peter@example.com'
+        }
+
+        connection.auth.attach_venue_identity_to(token, user['uuid'], 'spiral-galaxy', spiral_galaxy_options)
+      end
+
+      it "can be gathered with a token" do
+        response = client.get "/v1/#{user['uuid']}", 'Authorization' => "Bearer #{token}"
+        response.status.must_equal 200
+
+        data = JSON.parse(response.body)
+        data['uuid'].must_equal user['uuid']
+        data['venues'].keys.size.must_equal 2
+        data['venues']['facebook'].must_equal('name' => 'Peter Smith', 'id' => '053324235')
+        data['venues']['spiral-galaxy'].must_equal('name' => 'Peter S', 'id' => '76543675')
+      end
+
+      it "can be gathered without a token" do
+        response = client.get "/v1/public/#{user['uuid']}"
+        response.status.must_equal 200
+
+        data = JSON.parse(response.body)
+        data['uuid'].must_equal user['uuid']
+        data['venues'].keys.size.must_equal 2
+        data['venues']['facebook'].must_equal('name' => 'Peter Smith')
+        data['venues']['spiral-galaxy'].must_equal('name' => 'Peter S')
+      end
     end
   end
 

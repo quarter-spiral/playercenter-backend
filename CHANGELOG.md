@@ -1,5 +1,6 @@
 # 0.0.23 WIP
 
+* Adds an endpoint for public player information
 * Fixes documentation errors
 
 # 0.0.22

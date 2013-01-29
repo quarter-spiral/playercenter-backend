@@ -52,12 +52,31 @@ module Playercenter::Backend
       end
 
       def authentication_exception?
-        env['PATH_INFO'] =~ /\/avatars\/[^\/]+$/
+        env['PATH_INFO'] =~ /\/avatars\/[^\/]+$/ ||
+env['PATH_INFO'] =~ /^\/public\//
+      end
+
+      def venue_identities_for(uuid)
+        try_twice_and_avoid_token_expiration do
+          begin
+            connection.auth.venue_identities_of(token, uuid)
+          rescue Service::Client::ServiceError => e
+            error!(e.error, 404)
+          end
+        end
+      end
+
+      def strip_private_parts_from_venue_identities(venue_identities)
+        Hash[venue_identities.map do |venue, venue_identity|
+          public_identity = {
+            'name' => venue_identity['name']
+          }
+          [venue, public_identity]
+        end]
       end
     end
 
     before do
-
       header('Access-Control-Allow-Origin', request.env['HTTP_ORIGIN'] || '*')
 
       unless authentication_exception?
@@ -74,15 +93,16 @@ module Playercenter::Backend
       ""
     end
 
+    get "public/:uuid" do
+      uuid = params[:uuid]
+      venue_identities = venue_identities_for(uuid)
+      venue_identities = strip_private_parts_from_venue_identities(venue_identities)
+      {uuid: uuid, venues: venue_identities}
+    end
+
     get ":uuid" do
       uuid = params[:uuid]
-      venue_identities = try_twice_and_avoid_token_expiration do
-        begin
-          connection.auth.venue_identities_of(token, uuid)
-        rescue Service::Client::ServiceError => e
-          error!(e.error, 404)
-        end
-      end
+      venue_identities = venue_identities_for(uuid)
       {uuid: uuid, venues: venue_identities}
     end
 
