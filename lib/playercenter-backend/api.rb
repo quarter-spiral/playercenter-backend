@@ -146,24 +146,34 @@ env['PATH_INFO'] =~ /^\/public\//
     end
 
     get ":uuid/games" do
-      get_games_for(params[:uuid], params[:venue])
+      player = params[:uuid]
+      venue = params[:venue]
+
+      last_updated_played_games_at = connection.cache.fetch(['last_game_registered', player, venue]) {-1}
+
+      connection.cache.fetch(['games_i_play', player, venue, last_updated_played_games_at]) do
+        get_games_for(player, venue)
+      end
     end
 
     get ":uuid/games/friends" do
       uuid = params[:uuid]
       venue = params[:venue]
 
-      games = try_twice_and_avoid_token_expiration do
-        uuids = nil
-        if venue
-          venue = "venue#{Utils.camelize_string(venue)}"
-          uuids = connection.graph.query(token, [uuid], "MATCH node0-[:friends]->()-[p:plays]->game WHERE p.#{venue}! = true RETURN DISTINCT game.uuid")
-        else
-          uuids = connection.graph.query(token, [uuid], 'MATCH node0-[:friends]->()-[:plays]->game RETURN DISTINCT game.uuid')
+      cache_buster_time = Time.now.to_i.div(60 * 60 * 2) # Time to live
+      connection.cache.fetch(['games_my_friends_play', uuid, venue, cache_buster_time]) do
+        games = try_twice_and_avoid_token_expiration do
+          uuids = nil
+          if venue
+            venue = "venue#{Utils.camelize_string(venue)}"
+            uuids = connection.graph.query(token, [uuid], "MATCH node0-[:friends]->()-[p:plays]->game WHERE p.#{venue}! = true RETURN DISTINCT game.uuid")
+          else
+            uuids = connection.graph.query(token, [uuid], 'MATCH node0-[:friends]->()-[:plays]->game RETURN DISTINCT game.uuid')
+          end
+          connection.devcenter.list_games(uuids.map &:first)
         end
-        connection.devcenter.list_games(uuids.map &:first)
+        {games: games}
       end
-      {games: games}
     end
 
 
@@ -210,13 +220,17 @@ env['PATH_INFO'] =~ /^\/public\//
       venue = params[:venue]
       venue = Utils.camelize_string(venue)
 
-      try_twice_and_avoid_token_expiration do
-        connection.graph.add_role(player, token, 'player')
-        response = connection.graph.add_relationship(player, game, token, 'plays', meta: {"venue#{venue}" => true})
-        status response.raw.status
-      end
+      connection.cache.set(['last_game_registered', player, venue], Time.now.to_i)
 
-      ''
+      connection.cache.fetch(['game_registered', player, venue, game]) do
+        try_twice_and_avoid_token_expiration do
+          connection.graph.add_role(player, token, 'player')
+          response = connection.graph.add_relationship(player, game, token, 'plays', meta: {"venue#{venue}" => true})
+          status response.raw.status
+        end
+
+        ''
+      end
     end
 
     get ":uuid/friends" do

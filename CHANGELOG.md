@@ -1,3 +1,7 @@
+# 0.0.25 WIP
+
+* Adds caching to own and friend's games list
+
 # 0.0.24
 
 * Adds public endpoint to retrieve games a user plays
