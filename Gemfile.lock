@@ -19,7 +19,7 @@ GIT
 PATH
   remote: .
   specs:
-    playercenter-backend (0.0.25)
+    playercenter-backend (0.0.26)
       auth-client (>= 0.0.14)
       cache-backend-iron-cache (~> 0.0.4)
       cache-client (~> 0.0.4)
@@ -117,9 +117,9 @@ GEM
       rack-accept
       rack-mount
       virtus
-    grape_newrelic (0.0.3)
+    grape_newrelic (0.0.4)
       grape (>= 0.2.2)
-      newrelic_rpm (~> 3.5.4.33)
+      newrelic_rpm (>= 3.5.4.33)
     graph-backend (0.0.15)
       auth-client (>= 0.0.14)
       grape (>= 0.2.0)

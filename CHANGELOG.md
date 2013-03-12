@@ -1,4 +1,4 @@
-# 0.0.26 WIP
+# 0.0.26
 
 * Makes meta data retrieval work again for not yet set meta data
 
