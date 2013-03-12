@@ -1,3 +1,7 @@
+# 0.0.26 WIP
+
+* Makes meta data retrieval work again for not yet set meta data
+
 # 0.0.25
 
 * Adds caching to own and friend's games list

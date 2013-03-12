@@ -11,6 +11,7 @@ module Playercenter::Backend
     end
 
     def self.from_graph(data)
+      data ||= {}
       Hash[data.select{|key,value| key.start_with?(PREFIX)}.map do |key, value|
         [key.gsub(/^#{PREFIX}/, ''), value]
       end]
