@@ -17,11 +17,11 @@ module Playercenter::Backend
 
     version 'v1', :using => :path, :vendor => 'quarter-spiral'
 
-    content_type :json, "application/json;charset=utf-8"
+    #content_type :json, "application/json;charset=utf-8"
     format :json
     default_format :json
 
-    error_format :json
+    default_error_formatter :json
 
     rescue_from Error::InvalidPlayerMetaDataError do |e|
         Rack::Response.new({
@@ -53,7 +53,7 @@ module Playercenter::Backend
 
       def authentication_exception?
         env['PATH_INFO'] =~ /\/avatars\/[^\/]+$/ ||
-env['PATH_INFO'] =~ /^\/public\//
+env['PATH_INFO'] =~ /^\/v1\/public\//
       end
 
       def venue_identities_for(uuid)
@@ -85,9 +85,17 @@ env['PATH_INFO'] =~ /^\/public\//
             uuids = connection.graph.list_related_entities(uuid, token, 'plays')
           end
 
-          connection.devcenter.list_games(uuids)
+          if !uuids || uuids.empty?
+            []
+          else
+            connection.devcenter.list_games(uuids)
+          end
         end
         {games: games}
+      end
+
+      def empty_body
+        {}
       end
     end
 
@@ -229,7 +237,7 @@ env['PATH_INFO'] =~ /^\/public\//
           status response.raw.status
         end
 
-        ''
+        empty_body
       end
     end
 
@@ -282,8 +290,6 @@ env['PATH_INFO'] =~ /^\/public\//
       token_uuid = connection.auth.token_owner(@request_token)['uuid']
       error!("You can only add friends for yourself!", 403) unless token_uuid == params[:uuid]
 
-      body = request.body
-      body = body.read if body.respond_to?(:read)
       friends_data = params[:friends]
 
       venue_id = params[:venue_id]
@@ -298,7 +304,7 @@ env['PATH_INFO'] =~ /^\/public\//
         end
       end
 
-      ''
+      empty_body
     end
 
     get ":uuid/avatars/:venue_id" do

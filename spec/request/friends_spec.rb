@@ -33,11 +33,11 @@ describe Playercenter::Backend::API do
         @developer = UUID.new.generate
         connection.graph.add_role(@developer, app_token, 'developer')
 
-        @game_options1 = {:name => "Test Game 1", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}}
+        @game_options1 = {:name => "Test Game 1", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}, :category => 'Jump n Run'}
         @game1 = Devcenter::Backend::Game.create(app_token, @game_options1)
-        @game_options2 = {:name => "Test Game 2", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}}
+        @game_options2 = {:name => "Test Game 2", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}, :category => 'Jump n Run'}
         @game2 = Devcenter::Backend::Game.create(app_token, @game_options2)
-        @game_options3 = {:name => "Test Game 3", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}}
+        @game_options3 = {:name => "Test Game 3", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}, :category => 'Jump n Run'}
         @game3 = Devcenter::Backend::Game.create(app_token, @game_options3)
 
         @game1 = @game1.uuid
@@ -114,7 +114,7 @@ describe Playercenter::Backend::API do
       end
 
       it "can list friends by game" do
-        response = client.get "/v1/#{@uuid4}/friends", {"Authorization" => "Bearer #{@user_token4}"}, JSON.dump(game: @game1)
+        response = client.get "/v1/#{@uuid4}/friends?game=#{@game1}", {"Authorization" => "Bearer #{@user_token4}"}
         response.status.must_equal 200
         friends = JSON.parse(response.body)
         friends.keys.size.must_equal 3
@@ -122,7 +122,7 @@ describe Playercenter::Backend::API do
         friends.keys.must_include @uuid3
         friends.keys.must_include @uuid4
 
-        response = client.get "/v1/#{@uuid4}/friends", {"Authorization" => "Bearer #{@user_token4}"}, JSON.dump(game: @game2)
+        response = client.get "/v1/#{@uuid4}/friends?game=#{@game2}", {"Authorization" => "Bearer #{@user_token4}"}
         response.status.must_equal 200
         friends = JSON.parse(response.body)
         friends.keys.size.must_equal 2
@@ -136,7 +136,7 @@ describe Playercenter::Backend::API do
         connection.graph.add_relationship(@uuid5, @game1, app_token, 'plays', meta: {'venueFacebook' => true, "#{MetaData::PREFIX}lastLevel" => "Good Chamber"})
         connection.graph.add_relationship(@uuid4, @uuid5, app_token, 'friends')
 
-        response = client.get "/v1/#{@uuid4}/friends", {"Authorization" => "Bearer #{@user_token4}"}, JSON.dump(game: @game1, meta: ['highScore'])
+        response = client.get "/v1/#{@uuid4}/friends?game=#{@game1}&meta[]=highScore", {"Authorization" => "Bearer #{@user_token4}"}
         response.status.must_equal 200
         friends = JSON.parse(response.body)
         friends.keys.size.must_equal 4
@@ -148,7 +148,7 @@ describe Playercenter::Backend::API do
         friends[@uuid4]['meta'].must_equal('highScore' => 414)
         friends[@uuid5]['meta'].must_equal('highScore' => nil)
 
-        response = client.get "/v1/#{@uuid4}/friends", {"Authorization" => "Bearer #{@user_token4}"}, JSON.dump(game: @game1, meta: ['highScore', 'lastLevel'])
+        response = client.get "/v1/#{@uuid4}/friends?game=#{@game1}&meta[]=highScore&meta[]=lastLevel", {"Authorization" => "Bearer #{@user_token4}"}
         response.status.must_equal 200
         friends = JSON.parse(response.body)
         friends.keys.size.must_equal 4
@@ -186,20 +186,20 @@ describe Playercenter::Backend::API do
       end
 
       it "can list the games a player's friends play on a given venue" do
-        response = client.get "/v1/#{@uuid1}/games/friends", {"Authorization" => "Bearer #{@user_token1}"}, JSON.dump(venue: "galaxy-spiral")
+        response = client.get "/v1/#{@uuid1}/games/friends?galaxy-spiral", {"Authorization" => "Bearer #{@user_token1}"}
         response.status.must_equal 200
         games = JSON.parse(response.body)['games']
         games.size.must_equal 1
         games.detect {|g| g['uuid'] == @game1}.wont_be_nil
 
-        response = client.get "/v1/#{@uuid2}/games/friends", {"Authorization" => "Bearer #{@user_token1}"}, JSON.dump(venue: "facebook")
+        response = client.get "/v1/#{@uuid2}/games/friends?venue=facebook", {"Authorization" => "Bearer #{@user_token1}"}
         response.status.must_equal 200
         games = JSON.parse(response.body)['games']
         games.size.must_equal 2
         games.detect {|g| g['uuid'] == @game1}.wont_be_nil
         games.detect {|g| g['uuid'] == @game3}.wont_be_nil
 
-        response = client.get "/v1/#{@uuid2}/games/friends", {"Authorization" => "Bearer #{@user_token2}"}, JSON.dump(venue: "galaxy-spiral")
+        response = client.get "/v1/#{@uuid2}/games/friends?venue=galaxy-spiral", {"Authorization" => "Bearer #{@user_token2}"}
         response.status.must_equal 200
         games = JSON.parse(response.body)['games']
         games.size.must_equal 1
@@ -218,7 +218,8 @@ describe Playercenter::Backend::API do
       user_token1 = connection.auth.venue_token(app_token, 'facebook', 'venue-id' => '12345', 'name' => 'Sam')
       uuid1 = connection.auth.token_owner(user_token1)['uuid']
 
-      response = client.put "/v1/#{uuid1}/friends/facebook", {"Authorization" => "Bearer #{user_token1}"}, JSON.dump(friend_venue_data)
+      body = JSON.dump(friend_venue_data)
+      response = client.put "/v1/#{uuid1}/friends/facebook", {"Authorization" => "Bearer #{user_token1}", 'Content-Type' => 'application/json', 'Content-Length' => body.length}, body
       response.status.must_equal 200
 
       user_token2 = connection.auth.venue_token(app_token, 'facebook', 'venue-id' => '42568', 'name' => 'Pete')

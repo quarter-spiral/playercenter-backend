@@ -1,3 +1,7 @@
+# 0.0.27 WIP
+
+* Updates dependencies
+
 # 0.0.26
 
 * Makes meta data retrieval work again for not yet set meta data
