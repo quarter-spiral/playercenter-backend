@@ -236,9 +236,8 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
           response = connection.graph.add_relationship(player, game, token, 'plays', meta: {"venue#{venue}" => true})
           status response.raw.status
         end
-
-        empty_body
       end
+      empty_body
     end
 
     get ":uuid/friends" do

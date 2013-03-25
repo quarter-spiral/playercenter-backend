@@ -1,3 +1,7 @@
+# 0.0.28 WIP
+
+* Fixes a cached bad response format
+
 # 0.0.27
 
 * Updates dependencies
