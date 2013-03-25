@@ -1,4 +1,4 @@
-# 0.0.28 WIP
+# 0.0.28
 
 * Fixes a cached bad response format
 
