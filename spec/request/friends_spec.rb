@@ -192,7 +192,7 @@ describe Playercenter::Backend::API do
         games.size.must_equal 1
         games.detect {|g| g['uuid'] == @game1}.wont_be_nil
 
-        response = client.get "/v1/#{@uuid2}/games/friends?venue=facebook", {"Authorization" => "Bearer #{@user_token1}"}
+        response = client.get "/v1/#{@uuid2}/games/friends?venue=facebook", {"Authorization" => "Bearer #{@user_token2}"}
         response.status.must_equal 200
         games = JSON.parse(response.body)['games']
         games.size.must_equal 2

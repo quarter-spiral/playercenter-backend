@@ -17,7 +17,6 @@ module Playercenter::Backend
 
     version 'v1', :using => :path, :vendor => 'quarter-spiral'
 
-    #content_type :json, "application/json;charset=utf-8"
     format :json
     default_format :json
 
@@ -54,6 +53,30 @@ module Playercenter::Backend
       def authentication_exception?
         env['PATH_INFO'] =~ /\/avatars\/[^\/]+$/ ||
 env['PATH_INFO'] =~ /^\/v1\/public\//
+      end
+
+      def own_data?(uuid)
+        @token_owner['uuid'] == uuid
+      end
+
+      def system_level_privileges?
+        @token_owner['type'] == 'app'
+      end
+
+      def is_authorized_to_access?(uuid)
+        system_level_privileges? || own_data?(uuid)
+      end
+
+      def prevent_access!
+        error!('Unauthenticated', 403)
+      end
+
+      def owner_only!(uuid = params[:uuid])
+        prevent_access! unless is_authorized_to_access?(uuid)
+      end
+
+      def system_privileges_only!
+        prevent_access! unless system_level_privileges?
       end
 
       def venue_identities_for(uuid)
@@ -103,9 +126,10 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
       header('Access-Control-Allow-Origin', request.env['HTTP_ORIGIN'] || '*')
 
       unless authentication_exception?
-        error!('Unauthenticated', 403) unless request.env['HTTP_AUTHORIZATION']
-        @request_token = request.env['HTTP_AUTHORIZATION'].gsub(/^Bearer\s+/, '')
-        error!('Unauthenticated', 403) unless connection.auth.token_valid?(@request_token)
+        prevent_access! unless request.env['HTTP_AUTHORIZATION']
+        token = request.env['HTTP_AUTHORIZATION'].gsub(/^Bearer\s+/, '')
+        @token_owner = connection.auth.token_owner(token)
+        prevent_access! unless @token_owner
       end
     end
 
@@ -148,11 +172,14 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
     end
 
     get ":uuid" do
+      owner_only!(params[:uuid])
+
       uuid = params[:uuid]
       venue_identities = venue_identities_for(uuid)
       {uuid: uuid, venues: venue_identities}
     end
 
+    # deprecated!
     get ":uuid/games" do
       player = params[:uuid]
       venue = params[:venue]
@@ -165,6 +192,8 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
     end
 
     get ":uuid/games/friends" do
+      owner_only!(params[:uuid])
+
       uuid = params[:uuid]
       venue = params[:venue]
 
@@ -186,6 +215,8 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
 
 
     get ":player_uuid/games/:game_uuid/meta-data" do
+      owner_only!(params[:player_uuid])
+
       player = params[:player_uuid]
       game = params[:game_uuid]
       data = try_twice_and_avoid_token_expiration do
@@ -197,6 +228,8 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
 
     [":player_uuid/games/:game_uuid/meta-data", ":player_uuid/games/:game_uuid/meta-data/:property"].each do |url|
       put url do
+        owner_only!(params[:player_uuid])
+
         player = params[:player_uuid]
         game = params[:game_uuid]
         data = (params[:meta] || {}).to_hash
@@ -223,6 +256,8 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
     end
 
     post ":player_uuid/games/:game_uuid/:venue" do
+      owner_only!(params[:player_uuid])
+
       player = params[:player_uuid]
       game = params[:game_uuid]
       venue = params[:venue]
@@ -241,6 +276,8 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
     end
 
     get ":uuid/friends" do
+      owner_only!(params[:uuid])
+
       requester_uuid = params[:uuid]
       game = params[:game]
       meta = params[:meta]
@@ -286,8 +323,7 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
     end
 
     put ":uuid/friends/:venue_id" do
-      token_uuid = connection.auth.token_owner(@request_token)['uuid']
-      error!("You can only add friends for yourself!", 403) unless token_uuid == params[:uuid]
+      owner_only!(params[:uuid])
 
       friends_data = params[:friends]
 
@@ -299,7 +335,8 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
       venue = Venue.const_get(Utils.camelize_string(venue_id)).new
       friend_uuids.values.each do |friend_uuid|
         try_twice_and_avoid_token_expiration do
-          venue.friend(token_uuid, friend_uuid, token, connection)
+          connection.graph.add_role(friend_uuid, token, 'player')
+          venue.friend(params[:uuid], friend_uuid, token, connection)
         end
       end
 

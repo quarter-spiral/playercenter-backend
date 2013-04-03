@@ -11,13 +11,13 @@ group :development, :test do
   gem 'uuid'
   gem 'rake'
 
-  gem 'datastore-backend', "~> 0.0.18"
+  gem 'datastore-backend', "~> 0.0.19"
   #gem 'datastore-backend', path: '../datastore-backend'
-  gem 'devcenter-backend', "~> 0.0.45"
+  gem 'devcenter-backend', "~> 0.0.49"
   #gem 'devcenter-backend', path: '../devcenter-backend'
-  gem 'graph-backend', "~> 0.0.25"
+  gem 'graph-backend', "~> 0.0.26"
   #gem 'graph-backend', path: '../graph-backend'
-  gem 'auth-backend', "~> 0.0.29"
+  gem 'auth-backend', "~> 0.0.30"
   #gem 'auth-backend', path: '../auth-backend'
   gem 'datastore-client', '~> 0.0.11'
   #gem 'datastore-client', path: '../datastore-client'

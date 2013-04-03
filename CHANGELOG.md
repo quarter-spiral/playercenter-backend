@@ -1,3 +1,7 @@
+# 0.0.29 / Unreleased
+
+* Adds authorization
+
 # 0.0.28
 
 * Fixes a cached bad response format
