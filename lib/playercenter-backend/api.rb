@@ -328,15 +328,19 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
       friends_data = params[:friends]
 
       venue_id = params[:venue_id]
-      friend_uuids = try_twice_and_avoid_token_expiration do
-        connection.auth.uuids_of(token, venue_id => friends_data)[venue_id]
-      end
 
-      venue = Venue.const_get(Utils.camelize_string(venue_id)).new
-      friend_uuids.values.each do |friend_uuid|
-        try_twice_and_avoid_token_expiration do
-          connection.graph.add_role(friend_uuid, token, 'player')
-          venue.friend(params[:uuid], friend_uuid, token, connection)
+      cache_buster_time = Time.now
+      connection.cache.fetch(['update_friends', 'v1', params[:uuid], params[:venue_id], cache_buster_time.year, cache_buster_time.month, cache_buster_time.day]) do
+        friend_uuids = try_twice_and_avoid_token_expiration do
+          connection.auth.uuids_of(token, venue_id => friends_data)[venue_id]
+        end
+
+        venue = Venue.const_get(Utils.camelize_string(venue_id)).new
+        friend_uuids.values.each do |friend_uuid|
+          try_twice_and_avoid_token_expiration do
+            connection.graph.add_role(friend_uuid, token, 'player')
+            venue.friend(params[:uuid], friend_uuid, token, connection)
+          end
         end
       end
 

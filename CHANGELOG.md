@@ -1,3 +1,7 @@
+# 0.0.30 / Unreleased
+
+* Updates friends only once per day for each user on each venue
+
 # 0.0.29 / 2013-04-02
 
 * Adds authorization
