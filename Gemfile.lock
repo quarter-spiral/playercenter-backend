@@ -29,6 +29,7 @@ PATH
       graph-client (>= 0.0.12)
       json (= 1.7.7)
       ping-middleware (~> 0.0.2)
+      rack-crossdomain-xml (~> 0.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -218,6 +219,7 @@ GEM
       rack (>= 0.4)
     rack-client (0.4.0)
       rack (>= 1.0.0)
+    rack-crossdomain-xml (0.0.1)
     rack-jsonp-middleware (0.0.5)
       rack
     rack-mount (0.8.3)

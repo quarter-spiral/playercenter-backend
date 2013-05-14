@@ -1,3 +1,7 @@
+# 0.0.31 / Unreleased
+
+* Adds a ``crossdomain.xml``
+
 # 0.0.30 / 2013-04-13
 
 * Updates friends only once per day for each user on each venue

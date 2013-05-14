@@ -43,4 +43,7 @@ use RackCors
 require 'ping-middleware'
 use Ping::Middleware
 
+require 'rack/crossdomain/xml'
+use Rack::Crossdomain::Xml::Middleware
+
 run Playercenter::Backend::API
