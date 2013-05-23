@@ -126,8 +126,10 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
       header('Access-Control-Allow-Origin', request.env['HTTP_ORIGIN'] || '*')
 
       unless authentication_exception?
-        prevent_access! unless request.env['HTTP_AUTHORIZATION']
-        token = request.env['HTTP_AUTHORIZATION'].gsub(/^Bearer\s+/, '')
+        token = request.env['HTTP_AUTHORIZATION'] || params[:oauth_token]
+        prevent_access! unless token
+        token = token.gsub(/^Bearer\s+/, '')
+
         @token_owner = connection.auth.token_owner(token)
         prevent_access! unless @token_owner
       end

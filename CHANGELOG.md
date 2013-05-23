@@ -1,3 +1,6 @@
+# 0.0.32 / Unreleased
+
+* Makes it possible to pass the OAuth token as a query param
 # 0.0.31 / 2013-05-14
 
 * Adds a ``crossdomain.xml``
