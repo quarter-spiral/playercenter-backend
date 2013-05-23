@@ -1,4 +1,4 @@
-# 0.0.32 / Unreleased
+# 0.0.32 / 2013-05-23
 
 * Makes it possible to fake HTTP methods through a header
 * Makes it possible to pass the OAuth token as a query param
