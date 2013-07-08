@@ -15,7 +15,7 @@ Does not need any authentication. The response from this endpoint is very close 
 ##### Parameters
 
 - **UUID** [REQUIRED]: The UUID of the player you want to retrieve information about.
-
+
 ##### Body
 
 Empty.
@@ -41,6 +41,56 @@ JSON encoded object like this:
 ```
 
 All information under the ``venues`` is present for each venue this player is playing a Quarter Spiral game on.
+
+### Retrieve public information about a bunch of players
+
+Same as retrieving public information about a single player but for multiple ones at once.
+
+#### Request
+
+**GET** ``/public/players``
+
+##### Parameters
+
+- **uuids** [REQUIRED]: A JSON encoded array of UUIDs
+
+##### Body
+
+Empty.
+
+#### Response
+
+##### Body
+
+
+JSON encoded object like this:
+
+```javascript
+{
+  "some-uuid": {
+    "uuid": "some-uuid",
+    "venues": {
+      "facebook": {
+        "name": "The Peter"
+      },
+      "spiral-galaxy": {
+        "name": "Peter Smith"
+      }
+    }
+  },
+  "another-uuid": {
+    "uuid": "another-uuid",
+    "venues": {
+      "facebook": {
+        "name": "The Hans"
+      },
+      "spiral-galaxy": {
+        "name": "Hans Franz"
+      }
+    }
+  },
+}
+```
 
 ### List player's friends public information
 

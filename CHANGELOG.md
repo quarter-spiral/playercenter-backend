@@ -1,3 +1,7 @@
+# 0.0.33 / Unreleased
+
+* Adds an endpoint to retrieve public venue identity information in batches
+
 # 0.0.32 / 2013-05-23
 
 * Makes it possible to fake HTTP methods through a header

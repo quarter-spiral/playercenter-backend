@@ -79,14 +79,21 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
         prevent_access! unless system_level_privileges?
       end
 
-      def venue_identities_for(uuid)
-        try_twice_and_avoid_token_expiration do
+      def venue_identities_for(uuids)
+        result = try_twice_and_avoid_token_expiration do
           begin
-            connection.auth.venue_identities_of(token, uuid)
+            if uuids.kind_of?(Array)
+              connection.auth.venue_identities_of(token, *uuids)
+            else
+              connection.auth.venue_identities_of(token, uuids)
+            end
           rescue Service::Client::ServiceError => e
             error!(e.error, 404)
           end
         end
+
+        result = Hash[[[uuids, result]]] unless uuids.kind_of?(Array)
+        result
       end
 
       def strip_private_parts_from_venue_identities(venue_identities)
@@ -95,6 +102,13 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
             'name' => venue_identity['name']
           }
           [venue, public_identity]
+        end]
+      end
+
+      def public_venue_identity_info_for(venue_identities_data)
+        Hash[venue_identities_data.map do |uuid, venue_identities|
+          venue_identities = strip_private_parts_from_venue_identities(venue_identities)
+          [uuid, {uuid: uuid, venues: venue_identities}]
         end]
       end
 
@@ -142,11 +156,17 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
       ""
     end
 
+    get "public/players" do
+      uuids = params[:uuids]
+
+      venue_identities = venue_identities_for(uuids)
+      public_venue_identity_info_for(venue_identities)
+    end
+
     get "public/:uuid" do
       uuid = params[:uuid]
       venue_identities = venue_identities_for(uuid)
-      venue_identities = strip_private_parts_from_venue_identities(venue_identities)
-      {uuid: uuid, venues: venue_identities}
+      public_venue_identity_info_for(venue_identities)[uuid]
     end
 
     get "public/:uuid/friends" do
@@ -178,7 +198,7 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
 
       uuid = params[:uuid]
       venue_identities = venue_identities_for(uuid)
-      {uuid: uuid, venues: venue_identities}
+      {uuid: uuid, venues: venue_identities[uuid]}
     end
 
     # deprecated!

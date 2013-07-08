@@ -41,6 +41,7 @@ describe Playercenter::Backend::API do
         response.status.must_equal 200
 
         data = JSON.parse(response.body)
+
         data['uuid'].must_equal user['uuid']
         data['venues'].keys.size.must_equal 2
         data['venues']['facebook'].must_equal('name' => 'Peter Smith', 'id' => '053324235')
@@ -56,6 +57,32 @@ describe Playercenter::Backend::API do
         data['venues'].keys.size.must_equal 2
         data['venues']['facebook'].must_equal('name' => 'Peter Smith')
         data['venues']['spiral-galaxy'].must_equal('name' => 'Peter S')
+      end
+
+      it "can be gathered for multiple players at once" do
+        user2_options = {name: "AnotherUser", email: "another@example.com", password: "anotherpassword"}
+        user2 = AUTH_HELPERS.create_user!(user2_options)
+        facebook_options2 = {
+          "venue-id" => '4859045',
+          "name" =>     'Another User',
+          "email" =>    'another@example.com'
+        }
+        connection.auth.attach_venue_identity_to(app_token, user2['uuid'], 'facebook', facebook_options2)
+
+        response = client.get "/v1/public/players?uuids[]=#{user['uuid']}&uuids[]=#{user2['uuid']}"
+        response.status.must_equal 200
+
+        data = JSON.parse(response.body)
+        data.keys.must_equal([user['uuid'], user2['uuid']])
+
+        data[user['uuid']]['uuid'].must_equal user['uuid']
+        data[user['uuid']]['venues'].keys.size.must_equal 2
+        data[user['uuid']]['venues']['facebook'].must_equal('name' => 'Peter Smith')
+        data[user['uuid']]['venues']['spiral-galaxy'].must_equal('name' => 'Peter S')
+
+        data[user2['uuid']]['uuid'].must_equal user2['uuid']
+        data[user2['uuid']]['venues'].keys.size.must_equal 1
+        data[user2['uuid']]['venues']['facebook'].must_equal('name' => 'Another User')
       end
     end
   end
