@@ -160,6 +160,8 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
       uuids = params[:uuids]
 
       venue_identities = venue_identities_for(uuids)
+      venue_identities = Hash[[[uuids.first, venue_identities]]] if uuids.length == 1
+
       public_venue_identity_info_for(venue_identities)
     end
 

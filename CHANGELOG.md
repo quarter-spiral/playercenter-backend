@@ -1,3 +1,7 @@
+# 0.0.34 / Unreleased
+
+* Fixes result format when requesting public venue information as a batch for a single player
+
 # 0.0.33 / 2013-07-08
 
 * Adds an endpoint to retrieve public venue identity information in batches

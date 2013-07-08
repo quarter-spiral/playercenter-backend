@@ -84,6 +84,19 @@ describe Playercenter::Backend::API do
         data[user2['uuid']]['venues'].keys.size.must_equal 1
         data[user2['uuid']]['venues']['facebook'].must_equal('name' => 'Another User')
       end
+
+      it "always uses the batch format when hitting the batch endpoint" do
+        response = client.get "/v1/public/players?uuids[]=#{user['uuid']}"
+        response.status.must_equal 200
+
+        data = JSON.parse(response.body)
+        data.keys.must_equal([user['uuid']])
+
+        data[user['uuid']]['uuid'].must_equal user['uuid']
+        data[user['uuid']]['venues'].keys.size.must_equal 2
+        data[user['uuid']]['venues']['facebook'].must_equal('name' => 'Peter Smith')
+        data[user['uuid']]['venues']['spiral-galaxy'].must_equal('name' => 'Peter S')
+      end
     end
   end
 
