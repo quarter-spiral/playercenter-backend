@@ -1,4 +1,4 @@
-# 0.0.35 / Unreleased
+# 0.0.35 / 2013-07-12
 
 * Moves friend updates out of the request/response cycle to allow large friend updates without timeout
 

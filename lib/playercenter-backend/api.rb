@@ -355,7 +355,7 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
 
       cache_buster_time = Time.now
       connection.cache.fetch(['update_friends', 'v1', params[:uuid], params[:venue_id], cache_buster_time.year, cache_buster_time.month, cache_buster_time.day]) do
-        Thread.new do
+        Futuroscope::Future.new do
           connection = Connection.create
           friend_uuids = try_twice_and_avoid_token_expiration do
             connection.auth.uuids_of(token, venue_id => friends_data)[venue_id]
