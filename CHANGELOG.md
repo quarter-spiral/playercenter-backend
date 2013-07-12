@@ -1,3 +1,7 @@
+# 0.0.35 / Unreleased
+
+* Moves friend updates out of the request/response cycle to allow large friend updates without timeout
+
 # 0.0.34 / 2013-07-08
 
 * Fixes result format when requesting public venue information as a batch for a single player
