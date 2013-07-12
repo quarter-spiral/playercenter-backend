@@ -1,4 +1,4 @@
-# 0.0.36 / Unreleased
+# 0.0.36 / 2013-07-12
 
 * Fix a bug when switching to futuro
 
