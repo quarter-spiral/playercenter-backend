@@ -368,7 +368,7 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
               venue.friend(params[:uuid], friend_uuid, token, connection)
             end
           end
-        end.abort_on_exception = true
+        end
       end
 
       empty_body

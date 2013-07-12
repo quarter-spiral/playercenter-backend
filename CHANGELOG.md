@@ -1,3 +1,7 @@
+# 0.0.36 / Unreleased
+
+* Fix a bug when switching to futuro
+
 # 0.0.35 / 2013-07-12
 
 * Moves friend updates out of the request/response cycle to allow large friend updates without timeout
