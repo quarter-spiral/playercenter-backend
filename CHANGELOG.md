@@ -1,4 +1,4 @@
-# 0.0.37  / Unreleased
+# 0.0.37  / 2013-07-24
 
 * Fills up venue identities automatically on game registration
 

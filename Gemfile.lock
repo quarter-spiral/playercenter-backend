@@ -19,7 +19,7 @@ GIT
 PATH
   remote: .
   specs:
-    playercenter-backend (0.0.36)
+    playercenter-backend (0.0.37)
       auth-client (>= 0.0.15)
       cache-backend-iron-cache (~> 0.0.4)
       cache-client (~> 0.0.4)
