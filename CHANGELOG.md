@@ -1,3 +1,7 @@
+# 0.0.37  / Unreleased
+
+* Fills up venue identities automatically on game registration
+
 # 0.0.36 / 2013-07-12
 
 * Fix a bug when switching to futuro

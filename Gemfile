@@ -11,13 +11,13 @@ group :development, :test do
   gem 'uuid'
   gem 'rake'
 
-  gem 'datastore-backend', "~> 0.0.19"
+  gem 'datastore-backend', "~> 0.0.20"
   #gem 'datastore-backend', path: '../datastore-backend'
   gem 'devcenter-backend', "~> 0.0.49"
   #gem 'devcenter-backend', path: '../devcenter-backend'
   gem 'graph-backend', "~> 0.0.26"
   #gem 'graph-backend', path: '../graph-backend'
-  gem 'auth-backend', "~> 0.0.30"
+  gem 'auth-backend', "~> 0.0.44"
   #gem 'auth-backend', path: '../auth-backend'
   gem 'datastore-client', '~> 0.0.11'
   #gem 'datastore-client', path: '../datastore-client'
@@ -28,4 +28,5 @@ group :development, :test do
   gem 'sinatra_warden', git: 'https://github.com/quarter-spiral/sinatra_warden.git'
   gem 'songkick-oauth2-provider', git: 'https://github.com/quarter-spiral/oauth2-provider.git'
   gem 'kaminari', '~> 0.14.1'
+  gem 'bcrypt-ruby', '~> 3.0.0'
 end

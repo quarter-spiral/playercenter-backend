@@ -100,53 +100,79 @@ describe Playercenter::Backend::API do
     end
   end
 
-  it "can register a player at a game" do
-    @developer = UUID.new.generate
-    connection.graph.add_role(@developer, app_token, 'developer')
+  describe "registering players at a game" do
+    before do
+      @developer = UUID.new.generate
+      connection.graph.add_role(@developer, app_token, 'developer')
 
-    game_options = {:name => "Test Game 1", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}, :category => 'Jump n Run'}
-    game = Devcenter::Backend::Game.create(app_token, game_options).uuid
+      game_options = {:name => "Test Game 1", :description => "Good game", :configuration => {'type' => 'html5', 'url' => 'http://example.com'},:developers => [@developer], :venues => {"spiral-galaxy" => {"enabled" => true}}, :category => 'Jump n Run'}
+      @game = Devcenter::Backend::Game.create(app_token, game_options).uuid
+    end
 
-    connection.graph.list_roles(user['uuid'], token).wont_include 'player'
-    response = client.get "/v1/#{user['uuid']}/games", 'Authorization' => "Bearer #{token}"
-    games = JSON.parse(response.body)['games']
-    games.empty?.must_equal true
+    it "can register a player at a game" do
+      game = @game
 
-    response = client.post "/v1/#{user['uuid']}/games/#{game}/facebook", {'Authorization' => "Bearer #{token}"}
-    response.status.must_equal 201
+      connection.graph.list_roles(user['uuid'], token).wont_include 'player'
+      response = client.get "/v1/#{user['uuid']}/games", 'Authorization' => "Bearer #{token}"
+      games = JSON.parse(response.body)['games']
+      games.empty?.must_equal true
 
-    connection.graph.list_roles(user['uuid'], token).must_include 'player'
-    response = client.get "/v1/#{user['uuid']}/games", 'Authorization' => "Bearer #{token}"
-    games = JSON.parse(response.body)['games']
-    games.size.must_equal 1
-    games.detect {|g| g['uuid'] == game}.wont_be_nil
-    meta = connection.graph.relationship_metadata(user['uuid'], game, token, 'plays')
-    meta['venueFacebook'].must_equal true
-    meta['venueGalaxySpiral'].must_be_nil
+      response = client.post "/v1/#{user['uuid']}/games/#{game}/facebook", {'Authorization' => "Bearer #{token}"}
+      response.status.must_equal 201
 
-    response = client.post "/v1/#{user['uuid']}/games/#{game}/galaxy-spiral", 'Authorization' => "Bearer #{token}"
-    response.status.must_equal 200
+      connection.graph.list_roles(user['uuid'], token).must_include 'player'
+      response = client.get "/v1/#{user['uuid']}/games", 'Authorization' => "Bearer #{token}"
+      games = JSON.parse(response.body)['games']
+      games.size.must_equal 1
+      games.detect {|g| g['uuid'] == game}.wont_be_nil
+      meta = connection.graph.relationship_metadata(user['uuid'], game, token, 'plays')
+      meta['venueFacebook'].must_equal true
+      meta['venueGalaxySpiral'].must_be_nil
 
-    connection.graph.list_roles(user['uuid'], token).must_include 'player'
-    response = client.get "/v1/#{user['uuid']}/games", 'Authorization' => "Bearer #{token}"
-    games = JSON.parse(response.body)['games']
-    games.size.must_equal 1
-    games.detect {|g| g['uuid'] == game}.wont_be_nil
-    meta = connection.graph.relationship_metadata(user['uuid'], game, token, 'plays')
-    meta['venueFacebook'].must_equal true
-    meta['venueGalaxySpiral'].must_equal true
+      response = client.post "/v1/#{user['uuid']}/games/#{game}/galaxy-spiral", 'Authorization' => "Bearer #{token}"
+      response.status.must_equal 200
 
-    response = client.post "/v1/#{user['uuid']}/games/#{game}/facebook", 'Authorization' => "Bearer #{token}"
-    response.status.must_equal 304
+      connection.graph.list_roles(user['uuid'], token).must_include 'player'
+      response = client.get "/v1/#{user['uuid']}/games", 'Authorization' => "Bearer #{token}"
+      games = JSON.parse(response.body)['games']
+      games.size.must_equal 1
+      games.detect {|g| g['uuid'] == game}.wont_be_nil
+      meta = connection.graph.relationship_metadata(user['uuid'], game, token, 'plays')
+      meta['venueFacebook'].must_equal true
+      meta['venueGalaxySpiral'].must_equal true
 
-    connection.graph.list_roles(user['uuid'], token).must_include 'player'
-    response = client.get "/v1/#{user['uuid']}/games", 'Authorization' => "Bearer #{token}"
-    games = JSON.parse(response.body)['games']
-    games.size.must_equal 1
-    games.detect {|g| g['uuid'] == game}.wont_be_nil
-    meta = connection.graph.relationship_metadata(user['uuid'], game, token, 'plays')
-    meta['venueFacebook'].must_equal true
-    meta['venueGalaxySpiral'].must_equal true
+      response = client.post "/v1/#{user['uuid']}/games/#{game}/facebook", 'Authorization' => "Bearer #{token}"
+      response.status.must_equal 304
+
+      connection.graph.list_roles(user['uuid'], token).must_include 'player'
+      response = client.get "/v1/#{user['uuid']}/games", 'Authorization' => "Bearer #{token}"
+      games = JSON.parse(response.body)['games']
+      games.size.must_equal 1
+      games.detect {|g| g['uuid'] == game}.wont_be_nil
+      meta = connection.graph.relationship_metadata(user['uuid'], game, token, 'plays')
+      meta['venueFacebook'].must_equal true
+      meta['venueGalaxySpiral'].must_equal true
+    end
+
+    it "fills up missing venue identities when registering a player at a game" do
+      facebook_options = {
+        "venue-id" => '053324235',
+        "name" =>     'Peter Smith',
+        "email" =>    'peter.smith@example.com'
+      }
+      connection.auth.attach_venue_identity_to(token, user['uuid'], 'facebook', facebook_options)
+
+      venue_identities = connection.auth.venue_identities_of(app_token, user['uuid'])
+      venue_identities['embedded'].must_be_nil
+
+      response = client.post "/v1/#{user['uuid']}/games/#{@game}/embedded", {'Authorization' => "Bearer #{token}"}
+      response.status.must_equal 201
+      venue_identities = connection.auth.venue_identities_of(app_token, user['uuid'])
+
+      venue_identities['embedded'].wont_be_nil
+      venue_identities['embedded']['name'].must_equal facebook_options['name']
+      venue_identities['embedded']['id'].must_equal user['uuid']
+    end
   end
 
   describe "can list player's games on a given venue" do

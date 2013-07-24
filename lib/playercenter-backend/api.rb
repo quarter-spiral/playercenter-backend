@@ -134,6 +134,17 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
       def empty_body
         {}
       end
+
+      def attach_missing_venue_identity!(raw_venue, player)
+        if raw_venue == 'embedded'
+          venue_identities = connection.auth.venue_identities_of(token, player)
+          if !venue_identities[raw_venue] && !venue_identities.empty?
+            existing_venue_identity = venue_identities.values.first
+            new_venue_identity = {"venue-id" => player, "name" => existing_venue_identity["name"]}
+            connection.auth.attach_venue_identity_to(token, player, raw_venue, new_venue_identity)
+          end
+        end
+      end
     end
 
     before do
@@ -284,13 +295,15 @@ env['PATH_INFO'] =~ /^\/v1\/public\//
 
       player = params[:player_uuid]
       game = params[:game_uuid]
-      venue = params[:venue]
-      venue = Utils.camelize_string(venue)
+      raw_venue = params[:venue]
+      venue = Utils.camelize_string(raw_venue)
 
       connection.cache.set(['last_game_registered', player, venue], Time.now.to_i)
 
-      connection.cache.fetch(['game_registered', player, venue, game]) do
+      connection.cache.fetch(['game_registered_v2', player, venue, game]) do
         try_twice_and_avoid_token_expiration do
+          attach_missing_venue_identity!(raw_venue, player)
+
           connection.graph.add_role(player, token, 'player')
           response = connection.graph.add_relationship(player, game, token, 'plays', meta: {"venue#{venue}" => true})
           status response.raw.status
