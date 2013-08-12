@@ -218,18 +218,21 @@ describe Playercenter::Backend::API do
       user_token1 = connection.auth.venue_token(app_token, 'facebook', 'venue-id' => '12345', 'name' => 'Sam')
       uuid1 = connection.auth.token_owner(user_token1)['uuid']
 
-      body = JSON.dump(friend_venue_data)
-      response = client.put "/v1/#{uuid1}/friends/facebook", {"Authorization" => "Bearer #{user_token1}", 'Content-Type' => 'application/json', 'Content-Length' => body.length}, body
-      response.status.must_equal 200
-
       user_token2 = connection.auth.venue_token(app_token, 'facebook', 'venue-id' => '42568', 'name' => 'Pete')
       uuid2 = connection.auth.token_owner(user_token2)['uuid']
 
       user_token3 = connection.auth.venue_token(app_token, 'facebook', 'venue-id' => '3497', 'name' => 'Jack')
       uuid3 = connection.auth.token_owner(user_token3)['uuid']
 
+      body = JSON.dump(friend_venue_data)
+      response = client.put "/v1/#{uuid1}/friends/facebook", {"Authorization" => "Bearer #{user_token1}", 'Content-Type' => 'application/json', 'Content-Length' => body.length}, body
+      response.status.must_equal 200
+
+      sleep 2
+
       response = client.get "/v1/#{uuid1}/friends", "Authorization" => "Bearer #{user_token1}"
       response.status.must_equal 200
+
       friends = JSON.parse(response.body)
       friends.keys.size.must_equal 3
       friends.keys.must_include uuid1
