@@ -19,7 +19,7 @@ group :development, :test do
   #gem 'graph-backend', path: '../graph-backend'
   gem 'auth-backend', "~> 0.0.44"
   #gem 'auth-backend', path: '../auth-backend'
-  gem 'datastore-client', '~> 0.0.11'
+  gem 'datastore-client', '~> 0.0.12'
   #gem 'datastore-client', path: '../datastore-client'
 
   gem 'uuid'

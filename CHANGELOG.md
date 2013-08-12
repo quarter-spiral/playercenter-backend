@@ -1,3 +1,7 @@
+# 0.0.38 / Unreleased
+
+* Bumps client dependencies
+
 # 0.0.37  / 2013-07-24
 
 * Fills up venue identities automatically on game registration
