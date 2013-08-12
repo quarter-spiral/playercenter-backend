@@ -1,4 +1,4 @@
-# 0.0.39 / Unreleased
+# 0.0.39 / 2013-08-12
 
 * Fixed sentry app id
 
