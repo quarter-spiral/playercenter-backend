@@ -30,4 +30,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'rack-crossdomain-xml', '~> 0.0.1'
   gem.add_dependency 'rack-fake-method', '~> 0.0.1'
   gem.add_dependency 'futuroscope', '>= 0.1.3'
+  gem.add_dependency 'qs-request-tracker', '>= 0.0.2'
 end

@@ -43,6 +43,8 @@ use RackCors
 require 'ping-middleware'
 use Ping::Middleware
 
+use Qs::Request::Tracker::Middleware
+
 require 'rack/crossdomain/xml'
 use Rack::Crossdomain::Xml::Middleware
 

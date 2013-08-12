@@ -18,3 +18,5 @@ require "devcenter-client"
 require "cache-client"
 require "cache-backend-iron-cache"
 require "futuroscope"
+require 'qs/request/tracker'
+require 'qs/request/tracker/service_client_extension'

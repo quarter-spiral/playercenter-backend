@@ -30,6 +30,7 @@ PATH
       graph-client (>= 0.0.13)
       json (= 1.7.7)
       ping-middleware (~> 0.0.2)
+      qs-request-tracker (>= 0.0.2)
       rack-crossdomain-xml (~> 0.0.1)
       rack-fake-method (~> 0.0.1)
 
@@ -243,6 +244,8 @@ GEM
     ping-middleware (0.0.2)
     playercenter-client (0.0.4)
       service-client (>= 0.0.12)
+    qs-request-tracker (0.0.2)
+      uuid
     rack (1.4.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
